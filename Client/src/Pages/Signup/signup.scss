@@ -1,0 +1,71 @@
+.signup-parent {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f4f7fb 0%, #e8f5e9 100%);
+
+  .signup-form {
+    width: 100%;
+    max-width: 430px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+
+    .MuiTextField-root {
+      width: 100% !important;
+      margin: 0 !important;
+    }
+
+    .MuiButton-root {
+      width: 100%;
+      height: 48px;
+      margin-top: 8px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-transform: none;
+      transition: all 0.25s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.25);
+      }
+    }
+
+    .signup-message {
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 14px;
+      text-align: center;
+      word-break: break-word;
+
+      &.error {
+        background: #ffebee;
+        color: #c62828;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .signup-parent {
+    padding: 16px;
+
+    .signup-form {
+      padding: 28px 20px;
+      border-radius: 14px;
+    }
+  }
+}

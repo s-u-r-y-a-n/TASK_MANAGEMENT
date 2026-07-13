@@ -3,7 +3,12 @@ import cors from "cors";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
-import { login, signup, verifyEmail } from "./controllers/authController.js";
+import {
+  login,
+  refreshToken,
+  signup,
+  verifyEmail,
+} from "./controllers/authController.js";
 
 const app = express();
 
@@ -22,7 +27,7 @@ const mongoUrl = `${MONGODB_URL.replace("<db_password>", DB_PASSWORD)}/${DATABAS
 app.use(express.json());
 app.use(
   cors({
-    origin: CLIENT_URL || true,
+    origin: true,
     credentials: true,
   }),
 );
@@ -46,6 +51,9 @@ app.post("/signup", (request, response) => signup(request, response));
 app.post("/login", (request, response) => login(request, response));
 app.post("/verify-email", (request, response) =>
   verifyEmail(request, response),
+);
+app.post("/refreshtoken", (request, response) =>
+  refreshToken(request, response),
 );
 
 app.use((error, request, response, next) => {

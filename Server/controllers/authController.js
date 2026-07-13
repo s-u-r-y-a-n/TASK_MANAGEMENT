@@ -99,10 +99,21 @@ export const signup = async function (request, response) {
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: email,
-      subject: "Welcome to Task Management",
-      text: `Welcome to Task Management. Your account has been created successfully.
+      subject: "Welcome to Taskify - Verify Your Email",
+      text: `Hello ${user.username},
 
-Your email verification OTP is ${verifyOtp}. This OTP will expire in ${OTP_EXPIRY_TIME} minutes.`,
+Welcome to Taskify! We're excited to have you on board.
+
+To complete your account registration, please verify your email address using the One-Time Password (OTP) below:
+
+Verification OTP: ${verifyOtp}
+
+This OTP is valid for ${OTP_EXPIRY_TIME} minutes.
+
+If you did not create a Taskify account, please ignore this email. No further action is required.
+
+Thank you,
+The Taskify Team`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -173,6 +184,10 @@ export const login = async function (request, response) {
     }
 
     const { accessToken, refreshToken } = createAuthTokens(user);
+
+    user.refreshTokens.push(refreshToken);
+
+    await user.save();
 
     return response.status(200).json({
       success: true,
@@ -264,18 +279,283 @@ export const verifyEmail = async (request, response) => {
       });
     }
 
+    const { accessToken, refreshToken } = createAuthTokens(user);
     user.isAccountVerified = true;
     user.verifyOtp = "";
     user.verifyOtpExpireAt = 0;
+    user.refreshTokens.push(refreshToken);
     await user.save();
-
-    const { accessToken, refreshToken } = createAuthTokens(user);
 
     return response.status(200).json({
       success: true,
       accessToken,
       refreshToken,
       message: "Email verified successfully",
+    });
+  } catch (error) {
+    return response.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const refreshToken = async (request, response) => {
+  const authorizationHeader = request.headers.authorization;
+
+  if (!authorizationHeader) {
+    return response.status(401).json({
+      success: false,
+      message: "Authorization header is required",
+    });
+  }
+
+  if (!authorizationHeader.startsWith("Bearer ")) {
+    return response.status(401).json({
+      success: false,
+      message: "Invalid authorization header format",
+    });
+  }
+
+  const incomingRefreshToken = authorizationHeader.split(" ")[1];
+
+  if (!incomingRefreshToken) {
+    return response.status(401).json({
+      success: false,
+      message: "Refresh token is required",
+    });
+  }
+
+  try {
+    const decodedRefreshToken = jwt.verify(
+      incomingRefreshToken,
+      JWT_REFRESH_SECRET,
+    );
+
+    const user = await UserModel.findById(decodedRefreshToken.id);
+
+    if (!user) {
+      return response.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const storedRefreshToken = user.refreshTokens.find(
+      (token) => token === incomingRefreshToken,
+    );
+
+    if (!storedRefreshToken) {
+      return response.status(401).json({
+        success: false,
+        message: "Invalid refresh token",
+      });
+    }
+
+    const { accessToken, refreshToken: newRefreshToken } =
+      createAuthTokens(user);
+
+    user.refreshTokens = user.refreshTokens.filter(
+      (token) => token !== incomingRefreshToken,
+    );
+
+    user.refreshTokens.push(newRefreshToken);
+
+    await user.save();
+
+    return response.status(200).json({
+      success: true,
+      accessToken,
+      refreshToken: newRefreshToken,
+      message: "Tokens generated successfully",
+    });
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return response.status(401).json({
+        success: false,
+        message: "Refresh token has expired. Please login again",
+      });
+    }
+
+    if (error.name === "JsonWebTokenError") {
+      return response.status(401).json({
+        success: false,
+        message: "Invalid refresh token",
+      });
+    }
+
+    return response.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const resetOtp = async (request, response) => {
+  const email = normalizeEmail(request.body.email);
+
+  if (!email) {
+    return response.status(400).json({
+      success: false,
+      message: "Email is required",
+    });
+  }
+
+  if (!EMAIL_REGEX.test(email)) {
+    return response.status(400).json({
+      success: false,
+      message: "Please enter a valid email address",
+    });
+  }
+
+  try {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      return response.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const passwordResetOtp = String(
+      Math.floor(100000 + Math.random() * 900000),
+    );
+    user.resetOtp = passwordResetOtp;
+    user.resetOtpExpireAt = Date.now() + OTP_EXPIRY_TIME * 60 * 1000;
+
+    await user.save();
+
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject: "Taskify Password Reset OTP",
+      text: `Hello ${user.username},
+
+We received a request to reset the password for your Taskify account.
+
+Your One-Time Password (OTP) is: ${passwordResetOtp}
+
+This OTP is valid for ${OTP_EXPIRY_TIME} minutes. Please use it to complete your password reset.
+
+If you did not request a password reset, you can safely ignore this email. Your account will remain secure.
+
+Regards,
+The Taskify Team`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return response.status(200).json({
+      success: true,
+      message:
+        "Password Reset OTP has been sent successfully. Please verify your email using the OTP sent to your inbox",
+    });
+  } catch (error) {
+    return response.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const resetPassword = async (request, response) => {
+  const email = normalizeEmail(request.body.email);
+  const newPassword = normalizeText(request.body.newPassword);
+  const resetOtp = normalizeText(request.body.resetOtp);
+
+  if (!resetOtp) {
+    return response.status(400).json({
+      success: false,
+      message: "OTP is required",
+    });
+  }
+
+  if (!/^\d{6}$/.test(resetOtp)) {
+    return response.status(400).json({
+      success: false,
+      message: "Please enter the valid 6-digit OTP sent to your email",
+    });
+  }
+
+  if (!email) {
+    return response.status(400).json({
+      success: false,
+      message: "Email is required",
+    });
+  }
+
+  if (!EMAIL_REGEX.test(email)) {
+    return response.status(400).json({
+      success: false,
+      message: "Please enter a valid email address",
+    });
+  }
+
+  if (!newPassword) {
+    return response.status(400).json({
+      success: false,
+      message: "Password is required",
+    });
+  }
+
+  if (newPassword.length < 8) {
+    return response.status(400).json({
+      success: false,
+      message: "Password must be at least 8 characters long",
+    });
+  }
+
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return response.status(404).json({
+        success: false,
+        message: "No account found with this email",
+      });
+    }
+
+    const matchOtp = resetOtp === user.resetOtp;
+    const currentDate = Date.now();
+    const isExpired = currentDate > user.resetOtpExpireAt;
+    const validOtp = matchOtp && !isExpired;
+
+    if (!matchOtp) {
+      return response.status(400).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    if (isExpired) {
+      return response.status(410).json({
+        success: false,
+        message: "OTP has expired. Please request a new password reset OTP",
+      });
+    }
+
+    if (!validOtp) {
+      return response.status(400).json({
+        success: false,
+        message: "Unable to verify OTP",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.resetOtp = "";
+    user.resetOtpExpireAt = 0;
+    user.password = hashedPassword;
+    user.refreshTokens = [];
+    if (!user.isAccountVerified) {
+      user.isAccountVerified = true;
+    }
+    await user.save();
+
+    return response.status(200).json({
+      success: true,
+      message:
+        "Password reset successfully. Please log in using your new password.",
     });
   } catch (error) {
     return response.status(500).json({
