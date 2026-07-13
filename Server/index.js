@@ -3,12 +3,11 @@ import cors from "cors";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
-import {
-  login,
-  refreshToken,
-  signup,
-  verifyEmail,
-} from "./controllers/authController.js";
+import login from "./controllers/Auth Controllers/login.js";
+import refreshToken from "./controllers/Auth Controllers/refreshToken.js";
+import signup from "./controllers/Auth Controllers/signup.js";
+import verifyEmail from "./controllers/Auth Controllers/verifyEmail.js";
+
 
 const app = express();
 
