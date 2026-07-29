@@ -1,5 +1,6 @@
 import UserModel from "../../models/userModel.js";
 import { normalizeEmail, normalizeText } from "../../utils/inputFields.js";
+import { createAuthTokens } from "../../utils/authUtils.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

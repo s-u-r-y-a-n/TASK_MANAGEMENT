@@ -1,3 +1,7 @@
+import jwt from "jsonwebtoken";
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+
 export const createAuthTokens = (user) => {
   if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET) {
     throw new Error("JWT secrets are not configured");
