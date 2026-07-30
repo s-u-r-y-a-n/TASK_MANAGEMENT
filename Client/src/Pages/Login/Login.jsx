@@ -1,7 +1,8 @@
 import { Box, Button, TextField } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-import "../Signup/signup.scss"
+import "../Signup/signup.scss";
+import { Link } from "react-router-dom";
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Login = () => {
@@ -83,6 +84,10 @@ const Login = () => {
         >
           {isSubmitting ? "Logging..." : "Login"}
         </Button>
+        <p className="signup-btns">
+          <Link to="/">Don't have an account ?</Link>
+          <Link to="/reset-password">Forgot Password ?</Link>
+        </p>
         {message ? (
           <p className={isError ? "signup-message error" : "signup-message"}>
             {message}

@@ -6,7 +6,7 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const OtpInput = ({ length = 6, email }) => {
+const OtpInput = ({ length = 6, email, resetOtp }) => {
   const [otpInput, setOtpInput] = useState(Array.from({ length }, () => ""));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -57,6 +57,35 @@ const OtpInput = ({ length = 6, email }) => {
     }
   }
 
+  async function handleResetOtpSubmit(otp) {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/valiate-reset-otp`, {
+        email,
+        resetOtp: otp,
+      });
+
+      showToast(
+        "success",
+        "Success",
+        response.data.message || "Email verified successfully.",
+      );
+    } catch (error) {
+      console.error(error);
+
+      showToast(
+        "error",
+        "Verification Failed",
+        error.response?.data?.message || "Unable to verify email.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   function handleChange(event, index) {
     const value = event.target.value;
 
@@ -75,8 +104,11 @@ const OtpInput = ({ length = 6, email }) => {
 
     const combinedOtp = newOtp.join("");
 
-    if (combinedOtp.length === length) {
+    if (combinedOtp.length === length && !resetOtp) {
       handleOtpSubmit(combinedOtp);
+    }
+    if (combinedOtp.length === length && resetOtp) {
+      handleResetOtpSubmit(combinedOtp);
     }
   }
 
@@ -132,6 +164,8 @@ const OtpInput = ({ length = 6, email }) => {
     setOtpInput(newOtp);
 
     if (pastedOtp.length === length) {
+      if (resetOtp) {
+      }
       handleOtpSubmit(pastedOtp);
     } else {
       inputRefs.current[pastedOtp.length]?.focus();

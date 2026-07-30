@@ -1,11 +1,12 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import "./signup.scss";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import OtpInput from "../OtpInput/OtpInput";
+import { AppContext } from "../../Context/AppContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -19,7 +20,7 @@ const Signup = () => {
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
-  const [email, setEmail] = useState("");
+  const { email, setEmail } = useContext(AppContext);
 
   function handleSignupChange(event) {
     setSignupForm((prev) => {

@@ -1,12 +1,10 @@
-import bcrypt from "bcryptjs";
 import UserModel from "../../models/userModel.js";
 import { normalizeEmail, normalizeText } from "../../utils/inputFields.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const resetPassword = async (request, response) => {
+const validateResetOtp = async (request, response) => {
   const email = normalizeEmail(request.body.email);
-  const newPassword = normalizeText(request.body.newPassword);
   const resetOtp = normalizeText(request.body.resetOtp);
 
   if (!resetOtp) {
@@ -37,20 +35,6 @@ const resetPassword = async (request, response) => {
     });
   }
 
-  if (!newPassword) {
-    return response.status(400).json({
-      success: false,
-      message: "Password is required",
-    });
-  }
-
-  if (newPassword.length < 8) {
-    return response.status(400).json({
-      success: false,
-      message: "Password must be at least 8 characters long",
-    });
-  }
-
   try {
     const user = await UserModel.findOne({ email });
     if (!user) {
@@ -78,21 +62,9 @@ const resetPassword = async (request, response) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    user.resetOtp = "";
-    user.resetOtpExpireAt = 0;
-    user.password = hashedPassword;
-    user.refreshTokens = [];
-    if (!user.isAccountVerified) {
-      user.isAccountVerified = true;
-    }
-    await user.save();
-
     return response.status(200).json({
       success: true,
-      message:
-        "Password reset successfully. Please log in using your new password.",
+      message: "OTP verified successfully! Now enter your new password",
     });
   } catch (error) {
     return response.status(500).json({
@@ -102,4 +74,4 @@ const resetPassword = async (request, response) => {
   }
 };
 
-export default resetPassword;
+export default validateResetOtp;
