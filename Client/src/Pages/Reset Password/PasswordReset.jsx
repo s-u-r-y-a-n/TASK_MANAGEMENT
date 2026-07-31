@@ -1,33 +1,87 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import "../Signup/signup.scss";
 import { Box, Button, TextField } from "@mui/material";
 import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
 import OtpInput from "../OtpInput/OtpInput";
+import NewPassword from "../NewPassword/NewPassword";
+import { Toast } from "primereact/toast";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const PasswordReset = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { email, setEmail } = useContext(AppContext);
-  const [resetOtp, setResetOtp] = useState(false);
+  const { email, setEmail, isOtpSubmitted, isEmailSent, setIsEmailSent } =
+    useContext(AppContext);
+  const toast = useRef(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState(false);
 
   console.log("EMAIL", email);
 
+  const showToast = (severity, summary, detail, life = 3000) => {
+    toast.current?.show({
+      severity,
+      summary,
+      detail,
+      life,
+    });
+  };
+
+  console.log("ERROR", errorMessage);
+
   function handleChange(event) {
     setEmail(event.target.value);
+    if (error) {
+      setError(false);
+      setErrorMessage("");
+    }
+  }
+
+  function validateEmail() {
+    const sanitizedEmail = email.trim();
+
+    if (!sanitizedEmail) {
+      return "Please enter your registered email";
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(sanitizedEmail)) {
+      return "Please provide a valid email address";
+    }
+
+    return null;
   }
 
   async function resetPasswordSendOtp(event) {
-    console.log("dfd");
     event.preventDefault();
+    const validationError = validateEmail();
+
+    if (validationError) {
+      setError(true);
+      setErrorMessage(validationError);
+      return;
+    }
+    setError(false);
+    setErrorMessage("");
     setIsSubmitting(true);
-    try {
+      try {
       const response = await axios.post(`${API_BASE_URL}/reset-otp`, { email });
       console.log(response);
-      setResetOtp(true);
+      setIsEmailSent(true);
+      showToast(
+        "success",
+        "Success",
+        response.data.message || "Email verified successfully.",
+      );
     } catch (error) {
       console.error(error);
+      showToast(
+        "error",
+        "Verification Failed",
+        error.response?.data?.message || "Unable to verify email.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -35,7 +89,9 @@ const PasswordReset = () => {
 
   return (
     <div className="signup-parent">
-      {!resetOtp && (
+      <Toast ref={toast} />
+
+      {!isEmailSent && (
         <Box
           component="form"
           className="signup-form"
@@ -45,13 +101,15 @@ const PasswordReset = () => {
           onSubmit={resetPasswordSendOtp}
         >
           <TextField
-            id="outlined-password-input"
             label="Email"
-            type="text"
+            type="email"
             required
+            name="email"
             value={email}
             onChange={handleChange}
-            name="email"
+            error={error}
+            helperText={error ? errorMessage : ""}
+            autoComplete="email"
           />
           <Button
             variant="contained"
@@ -64,7 +122,15 @@ const PasswordReset = () => {
         </Box>
       )}
 
-      {resetOtp && <OtpInput resetOtp={resetOtp} email={email} />}
+      {isEmailSent && !isOtpSubmitted && (
+        <OtpInput
+          isEmailSent={isEmailSent}
+          setIsEmailSent={setIsEmailSent}
+          email={email}
+        />
+      )}
+
+      {isOtpSubmitted && isEmailSent && <NewPassword />}
     </div>
   );
 };

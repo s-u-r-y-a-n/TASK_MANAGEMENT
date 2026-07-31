@@ -7,6 +7,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import OtpInput from "../OtpInput/OtpInput";
 import { AppContext } from "../../Context/AppContext";
+import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -21,6 +22,54 @@ const Signup = () => {
   const [isError, setIsError] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const { email, setEmail } = useContext(AppContext);
+  const [validationError, setValidationError] = useState({
+    username: false,
+    email: false,
+    password: false,
+  });
+  const [errorMessage, setErrorMessage] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`])[A-Za-z\d@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`]{8,}$/;
+
+  function validateSignUpCredentials(form) {
+    const errors = {
+      username: "",
+      email: "",
+      password: "",
+    };
+
+    if (!form.username.trim()) {
+      errors.username = "Username is required";
+    }
+
+    if (!form.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    if (!form.password.trim()) {
+      errors.password = "Password is required";
+    } else if (!passwordRegex.test(form.password)) {
+      errors.password =
+        "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character.";
+    }
+
+    setErrorMessage(errors);
+
+    setValidationError({
+      username: !!errors.username,
+      email: !!errors.email,
+      password: !!errors.password,
+    });
+
+    return !Object.values(errors).some(Boolean);
+  }
 
   function handleSignupChange(event) {
     setSignupForm((prev) => {
@@ -29,10 +78,24 @@ const Signup = () => {
         [event.target.name]: event.target.value,
       };
     });
+
+    setErrorMessage((prev) => {
+      return { ...prev, [event.target.name]: "" };
+    });
+    setValidationError((prev) => {
+      return { ...prev, [event.target.name]: false };
+    });
+
+    if (event.target.name === "password") {
+      validatePasswordPattern(event.target.value);
+    }
   }
 
   async function signup(event) {
     event.preventDefault();
+    const isValid = validateSignUpCredentials(signupForm);
+
+    if (!isValid) return;
     setIsSubmitting(true);
     setMessage("");
     setIsError(false);
@@ -59,8 +122,6 @@ const Signup = () => {
     }
   }
 
-  console.log("EMAIL", email);
-
   return (
     <div className="signup-parent">
       {!isEmailSent ? (
@@ -80,6 +141,8 @@ const Signup = () => {
             value={signupForm.username}
             onChange={handleSignupChange}
             name="username"
+            error={validationError.username}
+            helperText={errorMessage.username}
           />
           <TextField
             id="outlined-password-input"
@@ -89,6 +152,8 @@ const Signup = () => {
             value={signupForm.email}
             name="email"
             onChange={handleSignupChange}
+            error={validationError.email}
+            helperText={errorMessage.email}
           />
           <TextField
             id="outlined-password-input"
@@ -98,6 +163,8 @@ const Signup = () => {
             value={signupForm.password}
             name="password"
             onChange={handleSignupChange}
+            error={validationError.password}
+            helperText={errorMessage.password}
           />
           <Button
             variant="contained"
@@ -119,6 +186,8 @@ const Signup = () => {
       ) : (
         <OtpInput email={email} />
       )}
+
+      <PasswordValidation password={signupForm.password} />
     </div>
   );
 };

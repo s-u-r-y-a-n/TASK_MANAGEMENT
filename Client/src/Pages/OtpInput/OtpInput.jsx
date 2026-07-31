@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./OtpInput.scss";
 import { TextField } from "@mui/material";
 import { Toast } from "primereact/toast";
 import axios from "axios";
+import { AppContext } from "../../Context/AppContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const OtpInput = ({ length = 6, email, resetOtp }) => {
+const OtpInput = ({ length = 6, email, isEmailSent }) => {
   const [otpInput, setOtpInput] = useState(Array.from({ length }, () => ""));
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const { setOtp, setIsOtpSubmitted } = useContext(AppContext);
   const inputRefs = useRef([]);
   const toast = useRef(null);
 
@@ -73,6 +74,7 @@ const OtpInput = ({ length = 6, email, resetOtp }) => {
         "Success",
         response.data.message || "Email verified successfully.",
       );
+      setIsOtpSubmitted(true);
     } catch (error) {
       console.error(error);
 
@@ -104,10 +106,12 @@ const OtpInput = ({ length = 6, email, resetOtp }) => {
 
     const combinedOtp = newOtp.join("");
 
-    if (combinedOtp.length === length && !resetOtp) {
+    if (combinedOtp.length === length && !isEmailSent) {
+      setOtp(combinedOtp);
       handleOtpSubmit(combinedOtp);
     }
-    if (combinedOtp.length === length && resetOtp) {
+    if (combinedOtp.length === length && isEmailSent) {
+      setOtp(combinedOtp);
       handleResetOtpSubmit(combinedOtp);
     }
   }
