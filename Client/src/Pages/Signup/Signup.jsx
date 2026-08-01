@@ -2,11 +2,14 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import "./signup.scss";
 import { useContext, useState } from "react";
-import { Button } from "@mui/material";
+import { Button, IconButton, InputAdornment } from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import OtpInput from "../OtpInput/OtpInput";
 import { AppContext } from "../../Context/AppContext";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import useToast from "../../hooks/useToast";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -18,9 +21,8 @@ const Signup = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { email, setEmail } = useContext(AppContext);
   const [validationError, setValidationError] = useState({
     username: false,
@@ -32,9 +34,12 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const { showToast } = useToast();
 
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`])[A-Za-z\d@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`]{8,}$/;
+
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
   function validateSignUpCredentials(form) {
     const errors = {
@@ -72,10 +77,12 @@ const Signup = () => {
   }
 
   function handleSignupChange(event) {
+    const value = event.target.value;
+    const sanitizedValue = value.replace(/\s/g, "");
     setSignupForm((prev) => {
       return {
         ...prev,
-        [event.target.name]: event.target.value,
+        [event.target.name]: sanitizedValue,
       };
     });
 
@@ -85,10 +92,6 @@ const Signup = () => {
     setValidationError((prev) => {
       return { ...prev, [event.target.name]: false };
     });
-
-    if (event.target.name === "password") {
-      validatePasswordPattern(event.target.value);
-    }
   }
 
   async function signup(event) {
@@ -97,25 +100,27 @@ const Signup = () => {
 
     if (!isValid) return;
     setIsSubmitting(true);
-    setMessage("");
-    setIsError(false);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/signup`, signupForm);
-      setMessage(response.data.message || "Signup successful");
       setEmail(signupForm.email);
       setSignupForm({
         username: "",
         email: "",
         password: "",
       });
+      showToast(
+        "success",
+        "Success",
+        response.data.message || "Process Succeded",
+      );
       setIsEmailSent(true);
     } catch (error) {
       console.error(error);
-      setIsError(true);
-      setMessage(
-        error.response?.data?.message ||
-          "Unable to create account. Please try again.",
+      showToast(
+        "error",
+        "Verification Failed",
+        error.response?.data?.message || "Process Failed",
       );
     } finally {
       setIsSubmitting(false);
@@ -123,72 +128,84 @@ const Signup = () => {
   }
 
   return (
-    <div className="signup-parent">
+    <>
       {!isEmailSent ? (
-        <Box
-          component="form"
-          className="signup-form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
-          noValidate
-          autoComplete="on"
-          onSubmit={signup}
-        >
-          <TextField
-            id="outlined-password-input"
-            label="Username"
-            type="text"
-            required
-            value={signupForm.username}
-            onChange={handleSignupChange}
-            name="username"
-            error={validationError.username}
-            helperText={errorMessage.username}
-          />
-          <TextField
-            id="outlined-password-input"
-            label="Email"
-            type="text"
-            required
-            value={signupForm.email}
-            name="email"
-            onChange={handleSignupChange}
-            error={validationError.email}
-            helperText={errorMessage.email}
-          />
-          <TextField
-            id="outlined-password-input"
-            label="Password"
-            type="password"
-            required
-            value={signupForm.password}
-            name="password"
-            onChange={handleSignupChange}
-            error={validationError.password}
-            helperText={errorMessage.password}
-          />
-          <Button
-            variant="contained"
-            color="success"
-            type="submit"
-            disabled={isSubmitting}
+        <div className="signup-parent">
+          <Box
+            component="form"
+            className="signup-form"
+            sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
+            noValidate
+            autoComplete="on"
+            onSubmit={signup}
           >
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </Button>
-          <p>
-            <Link to="/login">Already have an account ?</Link>
-          </p>
-          {message ? (
-            <p className={isError ? "signup-message error" : "signup-message"}>
-              {message}
+            <TextField
+              id="outlined-password-input"
+              label="Username"
+              type="text"
+              required
+              value={signupForm.username}
+              onChange={handleSignupChange}
+              name="username"
+              error={validationError.username}
+              helperText={errorMessage.username}
+            />
+            <TextField
+              id="outlined-password-input"
+              label="Email"
+              type="text"
+              required
+              value={signupForm.email}
+              name="email"
+              onChange={handleSignupChange}
+              error={validationError.email}
+              helperText={errorMessage.email}
+            />
+            <TextField
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              required
+              value={signupForm.password}
+              name="password"
+              onChange={handleSignupChange}
+              error={validationError.password}
+              helperText={errorMessage.password}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              color="success"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+            <p>
+              <Link to="/login">Already have an account ?</Link>
             </p>
-          ) : null}
-        </Box>
+          </Box>
+          <PasswordValidation password={signupForm.password} />
+        </div>
       ) : (
         <OtpInput email={email} />
       )}
-
-      <PasswordValidation password={signupForm.password} />
-    </div>
+    </>
   );
 };
 

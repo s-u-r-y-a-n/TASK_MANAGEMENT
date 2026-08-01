@@ -1,11 +1,12 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import "../Signup/signup.scss";
 import { Box, Button, TextField } from "@mui/material";
 import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
 import OtpInput from "../OtpInput/OtpInput";
 import NewPassword from "../NewPassword/NewPassword";
-import { Toast } from "primereact/toast";
+import useToast from "../../hooks/useToast";
+import { Link } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -13,22 +14,10 @@ const PasswordReset = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { email, setEmail, isOtpSubmitted, isEmailSent, setIsEmailSent } =
     useContext(AppContext);
-  const toast = useRef(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState(false);
 
-  console.log("EMAIL", email);
-
-  const showToast = (severity, summary, detail, life = 3000) => {
-    toast.current?.show({
-      severity,
-      summary,
-      detail,
-      life,
-    });
-  };
-
-  console.log("ERROR", errorMessage);
+  const { showToast } = useToast();
 
   function handleChange(event) {
     setEmail(event.target.value);
@@ -66,7 +55,7 @@ const PasswordReset = () => {
     setError(false);
     setErrorMessage("");
     setIsSubmitting(true);
-      try {
+    try {
       const response = await axios.post(`${API_BASE_URL}/reset-otp`, { email });
       console.log(response);
       setIsEmailSent(true);
@@ -88,51 +77,55 @@ const PasswordReset = () => {
   }
 
   return (
-    <div className="signup-parent">
-      <Toast ref={toast} />
-
-      {!isEmailSent && (
-        <Box
-          component="form"
-          className="signup-form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
-          noValidate
-          autoComplete="on"
-          onSubmit={resetPasswordSendOtp}
-        >
-          <TextField
-            label="Email"
-            type="email"
-            required
-            name="email"
-            value={email}
-            onChange={handleChange}
-            error={error}
-            helperText={error ? errorMessage : ""}
-            autoComplete="email"
-          />
-          <Button
-            variant="contained"
-            color="success"
-            type="submit"
-            disabled={isSubmitting}
+    <>
+      <div className="signup-parent">
+        {!isEmailSent && (
+          <Box
+            component="form"
+            className="signup-form"
+            sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
+            noValidate
+            autoComplete="on"
+            onSubmit={resetPasswordSendOtp}
           >
-            {isSubmitting ? "Processing..." : "Send Reset OTP"}
-          </Button>
-        </Box>
-      )}
+            <TextField
+              label="Email"
+              type="email"
+              required
+              name="email"
+              value={email}
+              onChange={handleChange}
+              error={error}
+              helperText={error ? errorMessage : ""}
+              autoComplete="email"
+            />
+            <Button
+              variant="contained"
+              color="success"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Processing..." : "Send Reset OTP"}
+            </Button>
+            <p>
+              <Link to="/login">Back to login page</Link>
+            </p>
+          </Box>
+        )}
 
-      {isEmailSent && !isOtpSubmitted && (
-        <OtpInput
-          isEmailSent={isEmailSent}
-          setIsEmailSent={setIsEmailSent}
-          email={email}
-        />
-      )}
-
+        {isEmailSent && !isOtpSubmitted && (
+          <OtpInput
+            isEmailSent={isEmailSent}
+            setIsEmailSent={setIsEmailSent}
+            email={email}
+          />
+        )}
+      </div>
       {isOtpSubmitted && isEmailSent && <NewPassword />}
-    </div>
+    </>
   );
 };
 
 export default PasswordReset;
+
+

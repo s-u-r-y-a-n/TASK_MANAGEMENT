@@ -24,7 +24,7 @@ const passwordRules = [
   {
     key: "minLength",
     text: "At least 8 characters",
-    regex: /^.{8,}$/,
+    regex: /^\S{8,}$/,
   },
 ];
 
