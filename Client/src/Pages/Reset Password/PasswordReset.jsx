@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import "../Signup/signup.scss";
+import "./PasswordReset.scss";
 import { Box, Button, TextField } from "@mui/material";
 import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
@@ -65,7 +65,7 @@ const PasswordReset = () => {
         response.data.message || "Email verified successfully.",
       );
     } catch (error) {
-      console.error(error);
+      console.error("ERROR IN RESET-OTP", error);
       showToast(
         "error",
         "Verification Failed",
@@ -78,11 +78,11 @@ const PasswordReset = () => {
 
   return (
     <>
-      <div className="signup-parent">
+      <div className="password-reset-parent">
         {!isEmailSent && (
           <Box
             component="form"
-            className="signup-form"
+            className="password-reset-form"
             sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
             noValidate
             autoComplete="on"
@@ -118,14 +118,13 @@ const PasswordReset = () => {
             isEmailSent={isEmailSent}
             setIsEmailSent={setIsEmailSent}
             email={email}
+            resetPasswordSendOtp={resetPasswordSendOtp}
           />
         )}
+        {isOtpSubmitted && isEmailSent && <NewPassword />}
       </div>
-      {isOtpSubmitted && isEmailSent && <NewPassword />}
     </>
   );
 };
 
 export default PasswordReset;
-
-

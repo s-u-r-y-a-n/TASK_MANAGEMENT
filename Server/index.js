@@ -1,4 +1,4 @@
-import express, { request } from "express";
+import express, { request, response } from "express";
 import cors from "cors";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
@@ -10,6 +10,7 @@ import verifyEmail from "./controllers/Auth Controllers/verifyEmail.js";
 import resetOtp from "./controllers/Auth Controllers/resetOtp.js";
 import validateResetOtp from "./controllers/Auth Controllers/validateResetOtp.js";
 import resetPassword from "./controllers/Auth Controllers/resetPassword.js";
+import resendVerificationOtp from "./controllers/Auth Controllers/resendVerificationOtp.js";
 
 const app = express();
 
@@ -62,6 +63,9 @@ app.post("/valiate-reset-otp", (request, response) =>
 );
 app.post("/reset-password", (request, response) =>
   resetPassword(request, response),
+);
+app.post("/resend-verification-otp", (request, response) =>
+  resendVerificationOtp(request, response),
 );
 
 app.use((error, request, response, next) => {

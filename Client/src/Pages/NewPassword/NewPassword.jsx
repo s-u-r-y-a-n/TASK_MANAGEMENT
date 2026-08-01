@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
-import "../Signup/signup.scss";
+import "./NewPassword.scss";
 import { Toast } from "primereact/toast";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 
@@ -55,12 +55,12 @@ const NewPassword = () => {
   }
 
   return (
-    <div className="signup-parent">
+    <div className="new-password-parent">
       <Toast ref={toast} />
 
       <Box
         component="form"
-        className="signup-form"
+        className="new-password-form"
         sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
         noValidate
         autoComplete="on"

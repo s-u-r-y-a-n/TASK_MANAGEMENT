@@ -1,16 +1,25 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./OtpInput.scss";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { Toast } from "primereact/toast";
 import axios from "axios";
 import { AppContext } from "../../Context/AppContext";
+import CountdownTimer from "../../Components/PasswordValidation/Timer/CountdownTimer";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const OtpInput = ({ length = 6, email, isEmailSent }) => {
+const OtpInput = ({
+  length = 6,
+  email,
+  isEmailSent,
+  resetPasswordSendOtp = () => {},
+  signup = () => {},
+}) => {
   const [otpInput, setOtpInput] = useState(Array.from({ length }, () => ""));
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setOtp, setIsOtpSubmitted } = useContext(AppContext);
+  const { setOtp, setIsOtpSubmitted, signupDetails } = useContext(AppContext);
+  const [resetKey, setResetKey] = useState(0);
+  const [disable, setDisable] = useState(true);
   const inputRefs = useRef([]);
   const toast = useRef(null);
 
@@ -19,6 +28,17 @@ const OtpInput = ({ length = 6, email, isEmailSent }) => {
   }, []);
 
   console.log("EMAILFROMOTPINPUT", email);
+  console.log("SIGNUPDETAILS", signupDetails);
+
+  const handleResendOtp = async (event) => {
+    if (isEmailSent) {
+      resetPasswordSendOtp?.(event);
+      setResetKey((prev) => prev + 1);
+      setDisable(true);
+    } else {
+      signup?.(event);
+    }
+  };
 
   const showToast = (severity, summary, detail, life = 3000) => {
     toast.current?.show({
@@ -226,7 +246,18 @@ const OtpInput = ({ length = 6, email, isEmailSent }) => {
 
       <div className="otp-resend">
         Didn't receive the code?
-        <button>Resend OTP</button>
+        <Button variant="text" disabled={disable} onClick={handleResendOtp}>
+          Resend OTP
+        </Button>
+      </div>
+      <div>
+        <CountdownTimer
+          initialTime={10}
+          resetKey={resetKey}
+          onComplete={() => {
+            return setDisable(false);
+          }}
+        />
       </div>
     </div>
   );

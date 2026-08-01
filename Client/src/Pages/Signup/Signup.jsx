@@ -21,9 +21,9 @@ const Signup = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [isSignupEmailSent, setIsSignupEmailSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { email, setEmail } = useContext(AppContext);
+  const { email, setEmail, setSignupDetails } = useContext(AppContext);
   const [validationError, setValidationError] = useState({
     username: false,
     email: false,
@@ -104,6 +104,8 @@ const Signup = () => {
     try {
       const response = await axios.post(`${API_BASE_URL}/signup`, signupForm);
       setEmail(signupForm.email);
+      setSignupDetails(signupForm);
+      console.log("SIGNUPFORM", signupForm);
       setSignupForm({
         username: "",
         email: "",
@@ -114,7 +116,7 @@ const Signup = () => {
         "Success",
         response.data.message || "Process Succeded",
       );
-      setIsEmailSent(true);
+      setIsSignupEmailSent(true);
     } catch (error) {
       console.error(error);
       showToast(
@@ -129,8 +131,8 @@ const Signup = () => {
 
   return (
     <>
-      {!isEmailSent ? (
-        <div className="signup-parent">
+      <div className="signup-parent">
+        {!isSignupEmailSent ? (
           <Box
             component="form"
             className="signup-form"
@@ -199,12 +201,12 @@ const Signup = () => {
             <p>
               <Link to="/login">Already have an account ?</Link>
             </p>
+            <PasswordValidation password={signupForm.password} />
           </Box>
-          <PasswordValidation password={signupForm.password} />
-        </div>
-      ) : (
-        <OtpInput email={email} />
-      )}
+        ) : (
+          <OtpInput email={email} signup={signup} />
+        )}
+      </div>
     </>
   );
 };

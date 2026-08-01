@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-import "../Signup/signup.scss";
+import "./Login.scss";
 import { Link } from "react-router-dom";
 import useToast from "../../hooks/useToast";
 import Visibility from "@mui/icons-material/Visibility";
@@ -113,10 +113,10 @@ const Login = () => {
   }
 
   return (
-    <div className="signup-parent">
+    <div className="login-parent">
       <Box
         component="form"
-        className="signup-form"
+        className="login-form"
         sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
         noValidate
         autoComplete="on"
@@ -169,7 +169,7 @@ const Login = () => {
         >
           {isSubmitting ? "Logging..." : "Login"}
         </Button>
-        <p className="signup-btns">
+        <p className="login-btns">
           <Link to="/">Don't have an account ?</Link>
           <Link to="/reset-password">Forgot Password ?</Link>
         </p>

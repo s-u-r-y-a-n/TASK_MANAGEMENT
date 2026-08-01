@@ -18,7 +18,7 @@ const CountdownTimer = ({ initialTime = 300, resetKey, onComplete }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft, onComplete]);
+  }, [timeLeft]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = String(timeLeft % 60).padStart(2, "0");
@@ -31,25 +31,3 @@ const CountdownTimer = ({ initialTime = 300, resetKey, onComplete }) => {
 };
 
 export default CountdownTimer;
-
-
-
-// To use it 
-
-const [resetKey, setResetKey] = useState(0);
-
-const handleResendOtp = async () => {
-  // Call your resend OTP API
-
-  setResetKey((prev) => prev + 1);
-};
-
-<CountdownTimer
-  initialTime={300}
-  resetKey={resetKey}
-  onComplete={() => console.log("OTP expired")}
-/>
-
-<Button onClick={handleResendOtp}>
-  Resend OTP
-</Button>
