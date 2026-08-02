@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "./OtpInput.scss";
 import { Button, TextField } from "@mui/material";
 import { Toast } from "primereact/toast";
@@ -13,7 +13,6 @@ const OtpInput = ({
   email,
   isEmailSent,
   resetPasswordSendOtp = () => {},
-  signup = () => {},
 }) => {
   const [otpInput, setOtpInput] = useState(Array.from({ length }, () => ""));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +35,9 @@ const OtpInput = ({
       setResetKey((prev) => prev + 1);
       setDisable(true);
     } else {
-      signup?.(event);
+      resendVerificationOtp();
+      setResetKey((prev) => prev + 1);
+      setDisable(true);
     }
   };
 
@@ -62,8 +63,8 @@ const OtpInput = ({
 
       showToast(
         "success",
-        "Success",
-        response.data.message || "Email verified successfully.",
+        "Email Verified",
+        response.data.message || "Your email has been verified successfully.",
       );
     } catch (error) {
       console.error(error);
@@ -71,10 +72,36 @@ const OtpInput = ({
       showToast(
         "error",
         "Verification Failed",
-        error.response?.data?.message || "Unable to verify email.",
+        error.response?.data?.message ||
+          "We could not verify that code. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function resendVerificationOtp() {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/resend-verification-otp`,
+        {
+          email,
+        },
+      );
+      showToast(
+        "success",
+        "Code Sent",
+        response.data.message ||
+          "A new verification code has been sent to your email.",
+      );
+    } catch (error) {
+      console.error(error);
+      showToast(
+        "error",
+        "Could Not Send Code",
+        error.response?.data?.message ||
+          "We could not send a new verification code. Please try again.",
+      );
     }
   }
 
@@ -91,8 +118,9 @@ const OtpInput = ({
 
       showToast(
         "success",
-        "Success",
-        response.data.message || "Email verified successfully.",
+        "Code Verified",
+        response.data.message ||
+          "Your code has been verified. You can now set a new password.",
       );
       setIsOtpSubmitted(true);
     } catch (error) {
@@ -101,7 +129,8 @@ const OtpInput = ({
       showToast(
         "error",
         "Verification Failed",
-        error.response?.data?.message || "Unable to verify email.",
+        error.response?.data?.message ||
+          "We could not verify that code. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -188,9 +217,13 @@ const OtpInput = ({
     setOtpInput(newOtp);
 
     if (pastedOtp.length === length) {
-      if (resetOtp) {
+      if (isEmailSent) {
+        setOtp(pastedOtp);
+        handleResetOtpSubmit(pastedOtp);
+      } else {
+        setOtp(pastedOtp);
+        handleOtpSubmit(pastedOtp);
       }
-      handleOtpSubmit(pastedOtp);
     } else {
       inputRefs.current[pastedOtp.length]?.focus();
     }
@@ -247,7 +280,7 @@ const OtpInput = ({
       <div className="otp-resend">
         Didn't receive the code?
         <Button variant="text" disabled={disable} onClick={handleResendOtp}>
-          Resend OTP
+          Resend Code
         </Button>
       </div>
       <div>

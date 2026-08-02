@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Login.scss";
 import { Link } from "react-router-dom";
 import useToast from "../../hooks/useToast";
@@ -33,7 +33,7 @@ const Login = () => {
   });
 
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`])[A-Za-z\d@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`]{8,}$/;
+    /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).*$/;
 
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
@@ -99,13 +99,18 @@ const Login = () => {
         email: "",
         password: "",
       });
-      showToast("success", "Success", response.data.message || "Success");
+      showToast(
+        "success",
+        "Logged In",
+        response.data.message || "You have been logged in successfully.",
+      );
     } catch (error) {
       console.error(error);
       showToast(
         "error",
-        "Process Failed",
-        error.response?.data?.message || "Please try again later",
+        "Login Failed",
+        error.response?.data?.message ||
+          "We could not log you in. Please check your details and try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -167,7 +172,7 @@ const Login = () => {
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Logging..." : "Login"}
+          {isSubmitting ? "Logging in..." : "Login"}
         </Button>
         <p className="login-btns">
           <Link to="/">Don't have an account ?</Link>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import "./PasswordReset.scss";
 import { Box, Button, TextField } from "@mui/material";
 import { AppContext } from "../../Context/AppContext";
@@ -61,15 +61,17 @@ const PasswordReset = () => {
       setIsEmailSent(true);
       showToast(
         "success",
-        "Success",
-        response.data.message || "Email verified successfully.",
+        "Code Sent",
+        response.data.message ||
+          "A password reset code has been sent to your email.",
       );
     } catch (error) {
       console.error("ERROR IN RESET-OTP", error);
       showToast(
         "error",
-        "Verification Failed",
-        error.response?.data?.message || "Unable to verify email.",
+        "Reset Code Failed",
+        error.response?.data?.message ||
+          "We could not send a reset code. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -105,7 +107,7 @@ const PasswordReset = () => {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Processing..." : "Send Reset OTP"}
+              {isSubmitting ? "Sending..." : "Send Reset Code"}
             </Button>
             <p>
               <Link to="/login">Back to login page</Link>

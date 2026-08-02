@@ -21,6 +21,16 @@ const taskListSchema = new mongoose.Schema(
   },
 );
 
+taskListSchema.index(
+  {
+    userId: 1,
+    listName: 1,
+  },
+  {
+    unique: true,
+  },
+);
+
 const TaskListModel =
   mongoose.models.taskList || mongoose.model("taskList", taskListSchema);
 

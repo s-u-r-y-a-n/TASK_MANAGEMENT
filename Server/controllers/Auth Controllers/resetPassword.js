@@ -12,21 +12,21 @@ const resetPassword = async (request, response) => {
   if (!resetOtp) {
     return response.status(400).json({
       success: false,
-      message: "OTP is required",
+      message: "Please enter the reset code.",
     });
   }
 
   if (!/^\d{6}$/.test(resetOtp)) {
     return response.status(400).json({
       success: false,
-      message: "Please enter the valid 6-digit OTP sent to your email",
+      message: "Please enter the 6-digit code sent to your email.",
     });
   }
 
   if (!email) {
     return response.status(400).json({
       success: false,
-      message: "Email is required",
+      message: "Please enter your email address.",
     });
   }
 
@@ -40,14 +40,14 @@ const resetPassword = async (request, response) => {
   if (!newPassword) {
     return response.status(400).json({
       success: false,
-      message: "Password is required",
+      message: "Please enter your new password.",
     });
   }
 
   if (newPassword.length < 8) {
     return response.status(400).json({
       success: false,
-      message: "Password must be at least 8 characters long",
+      message: "Password must be at least 8 characters long.",
     });
   }
 
@@ -56,7 +56,7 @@ const resetPassword = async (request, response) => {
     if (!user) {
       return response.status(404).json({
         success: false,
-        message: "No account found with this email",
+        message: "No account was found with this email address.",
       });
     }
 
@@ -67,14 +67,14 @@ const resetPassword = async (request, response) => {
     if (!matchOtp) {
       return response.status(400).json({
         success: false,
-        message: "Invalid OTP",
+        message: "The reset code is incorrect.",
       });
     }
 
     if (isExpired) {
       return response.status(410).json({
         success: false,
-        message: "OTP has expired. Please request a new password reset OTP",
+        message: "This reset code has expired. Please request a new one.",
       });
     }
 
@@ -92,12 +92,12 @@ const resetPassword = async (request, response) => {
     return response.status(200).json({
       success: true,
       message:
-        "Password reset successfully. Please log in using your new password.",
+        "Your password has been reset. Please log in with your new password.",
     });
   } catch (error) {
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not reset your password right now. Please try again.",
     });
   }
 };

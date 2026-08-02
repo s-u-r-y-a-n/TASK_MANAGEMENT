@@ -10,21 +10,21 @@ const validateResetOtp = async (request, response) => {
   if (!resetOtp) {
     return response.status(400).json({
       success: false,
-      message: "OTP is required",
+      message: "Please enter the reset code.",
     });
   }
 
   if (!/^\d{6}$/.test(resetOtp)) {
     return response.status(400).json({
       success: false,
-      message: "Please enter the valid 6-digit OTP sent to your email",
+      message: "Please enter the 6-digit code sent to your email.",
     });
   }
 
   if (!email) {
     return response.status(400).json({
       success: false,
-      message: "Email is required",
+      message: "Please enter your email address.",
     });
   }
 
@@ -40,7 +40,7 @@ const validateResetOtp = async (request, response) => {
     if (!user) {
       return response.status(404).json({
         success: false,
-        message: "No account found with this email",
+        message: "No account was found with this email address.",
       });
     }
 
@@ -51,25 +51,25 @@ const validateResetOtp = async (request, response) => {
     if (!matchOtp) {
       return response.status(400).json({
         success: false,
-        message: "Invalid OTP",
+        message: "The reset code is incorrect.",
       });
     }
 
     if (isExpired) {
       return response.status(410).json({
         success: false,
-        message: "OTP has expired. Please request a new password reset OTP",
+        message: "This reset code has expired. Please request a new one.",
       });
     }
 
     return response.status(200).json({
       success: true,
-      message: "OTP verified successfully! Now enter your new password",
+      message: "Code verified. Please enter your new password.",
     });
   } catch (error) {
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not verify the reset code right now. Please try again.",
     });
   }
 };

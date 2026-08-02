@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import UserModel from "../../models/userModel.js";
 import { normalizeEmail, normalizeText } from "../../utils/inputFields.js";
+import { createAuthTokens } from "../../utils/authUtils.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -11,7 +12,7 @@ const login = async function (request, response) {
   if (!email) {
     return response.status(400).json({
       success: false,
-      message: "Email is required",
+      message: "Please enter your email address.",
     });
   }
 
@@ -25,7 +26,7 @@ const login = async function (request, response) {
   if (!password) {
     return response.status(400).json({
       success: false,
-      message: "Password is required",
+      message: "Please enter your password.",
     });
   }
 
@@ -43,7 +44,7 @@ const login = async function (request, response) {
     if (!isAccountVerified) {
       return response.status(403).json({
         success: false,
-        message: "Account not verified. Please verify your email",
+        message: "Please verify your email before logging in.",
       });
     }
 
@@ -66,12 +67,12 @@ const login = async function (request, response) {
       success: true,
       accessToken,
       refreshToken,
-      message: "Logged in successfully",
+      message: "You have been logged in successfully.",
     });
   } catch (error) {
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not log you in right now. Please try again.",
     });
   }
 };

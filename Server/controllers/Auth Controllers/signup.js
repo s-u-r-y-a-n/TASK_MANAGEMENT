@@ -14,14 +14,14 @@ const signup = async function (request, response) {
   if (!username) {
     return response.status(400).json({
       success: false,
-      message: "Username is required",
+      message: "Please enter a username.",
     });
   }
 
   if (!email) {
     return response.status(400).json({
       success: false,
-      message: "Email is required",
+      message: "Please enter your email address.",
     });
   }
 
@@ -35,14 +35,14 @@ const signup = async function (request, response) {
   if (!password) {
     return response.status(400).json({
       success: false,
-      message: "Password is required",
+      message: "Please enter a password.",
     });
   }
 
   if (password.length < 8) {
     return response.status(400).json({
       success: false,
-      message: "Password must be at least 8 characters long",
+      message: "Password must be at least 8 characters long.",
     });
   }
 
@@ -51,7 +51,7 @@ const signup = async function (request, response) {
     if (existingUser) {
       return response.status(409).json({
         success: false,
-        message: "An account with this email already exists",
+        message: "An account with this email already exists. Please log in instead.",
       });
     }
 
@@ -77,11 +77,11 @@ const signup = async function (request, response) {
 
 Welcome to Taskify! We're excited to have you on board.
 
-To complete your account registration, please verify your email address using the One-Time Password (OTP) below:
+To complete your account registration, please verify your email address using the code below:
 
-Verification OTP: ${verifyOtp}
+Verification code: ${verifyOtp}
 
-This OTP is valid for ${OTP_EXPIRY_TIME} minutes.
+This code is valid for ${OTP_EXPIRY_TIME} minutes.
 
 If you did not create a Taskify account, please ignore this email. No further action is required.
 
@@ -94,12 +94,12 @@ The Taskify Team`,
     return response.status(201).json({
       success: true,
       message:
-        "Account created successfully. Please verify your email using the OTP sent to your inbox",
+        "Your account has been created. Please verify your email using the code sent to your inbox.",
     });
   } catch (error) {
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not create your account right now. Please try again.",
     });
   }
 };

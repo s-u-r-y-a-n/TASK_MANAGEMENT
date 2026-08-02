@@ -11,6 +11,7 @@ import resetOtp from "./controllers/Auth Controllers/resetOtp.js";
 import validateResetOtp from "./controllers/Auth Controllers/validateResetOtp.js";
 import resetPassword from "./controllers/Auth Controllers/resetPassword.js";
 import resendVerificationOtp from "./controllers/Auth Controllers/resendVerificationOtp.js";
+import createList from "./controllers/Task List Controllers/createList.js";
 
 const app = express();
 
@@ -45,7 +46,7 @@ connectDB(mongoUrl);
 app.get("/", function (request, response) {
   response.status(200).json({
     success: true,
-    message: "Task Management API is running",
+    message: "Task Management API is running.",
   });
 });
 
@@ -67,12 +68,13 @@ app.post("/reset-password", (request, response) =>
 app.post("/resend-verification-otp", (request, response) =>
   resendVerificationOtp(request, response),
 );
+app.post("/create-list", (request, response) => createList(request, response));
 
 app.use((error, request, response, next) => {
   if (error instanceof SyntaxError && "body" in error) {
     return response.status(400).json({
       success: false,
-      message: "Invalid JSON request body",
+      message: "The request body contains invalid JSON.",
     });
   }
 
@@ -82,7 +84,7 @@ app.use((error, request, response, next) => {
 app.use((request, response) => {
   response.status(404).json({
     success: false,
-    message: "Route not found",
+    message: "The requested route was not found.",
   });
 });
 

@@ -11,21 +11,21 @@ const verifyEmail = async (request, response) => {
   if (!otp) {
     return response.status(400).json({
       success: false,
-      message: "OTP is required",
+      message: "Please enter the verification code.",
     });
   }
 
   if (!/^\d{6}$/.test(otp)) {
     return response.status(400).json({
       success: false,
-      message: "Please enter the valid 6-digit OTP sent to your email",
+      message: "Please enter the 6-digit code sent to your email.",
     });
   }
 
   if (!email) {
     return response.status(400).json({
       success: false,
-      message: "Email is required",
+      message: "Please enter your email address.",
     });
   }
 
@@ -41,7 +41,7 @@ const verifyEmail = async (request, response) => {
     if (!user) {
       return response.status(404).json({
         success: false,
-        message: "No account found with this email",
+        message: "No account was found with this email address.",
       });
     }
 
@@ -50,7 +50,7 @@ const verifyEmail = async (request, response) => {
     if (isVerified) {
       return response.status(409).json({
         success: false,
-        message: "Account already verified. Please login",
+        message: "This account is already verified. Please log in.",
       });
     }
 
@@ -62,21 +62,21 @@ const verifyEmail = async (request, response) => {
     if (!matchOtp) {
       return response.status(400).json({
         success: false,
-        message: "Invalid OTP",
+        message: "The verification code is incorrect.",
       });
     }
 
     if (isExpired) {
       return response.status(410).json({
         success: false,
-        message: "OTP has expired. Please request a new verification OTP",
+        message: "This verification code has expired. Please request a new one.",
       });
     }
 
     if (!validOtp) {
       return response.status(400).json({
         success: false,
-        message: "Unable to verify OTP",
+        message: "We could not verify this code. Please try again.",
       });
     }
 
@@ -91,12 +91,12 @@ const verifyEmail = async (request, response) => {
       success: true,
       accessToken,
       refreshToken,
-      message: "Email verified successfully",
+      message: "Your email has been verified successfully.",
     });
   } catch (error) {
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not verify your email right now. Please try again.",
     });
   }
 };

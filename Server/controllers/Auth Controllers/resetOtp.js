@@ -11,7 +11,7 @@ const resetOtp = async (request, response) => {
   if (!email) {
     return response.status(400).json({
       success: false,
-      message: "Email is required",
+      message: "Please enter your email address.",
     });
   }
 
@@ -28,7 +28,7 @@ const resetOtp = async (request, response) => {
     if (!user) {
       return response.status(404).json({
         success: false,
-        message: "User not found",
+        message: "No account was found with this email address.",
       });
     }
 
@@ -43,14 +43,14 @@ const resetOtp = async (request, response) => {
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: email,
-      subject: "Taskify Password Reset OTP",
+      subject: "Taskify Password Reset Code",
       text: `Hello ${user.username},
 
 We received a request to reset the password for your Taskify account.
 
-Your One-Time Password (OTP) is: ${passwordResetOtp}
+Your password reset code is: ${passwordResetOtp}
 
-This OTP is valid for ${OTP_EXPIRY_TIME} minutes. Please use it to complete your password reset.
+This code is valid for ${OTP_EXPIRY_TIME} minutes. Please use it to complete your password reset.
 
 If you did not request a password reset, you can safely ignore this email. Your account will remain secure.
 
@@ -63,12 +63,12 @@ The Taskify Team`,
     return response.status(200).json({
       success: true,
       message:
-        "Password Reset OTP has been sent successfully. Please verify your email using the OTP sent to your inbox",
+        "A password reset code has been sent to your email.",
     });
   } catch (error) {
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not send a password reset code right now. Please try again.",
     });
   }
 };

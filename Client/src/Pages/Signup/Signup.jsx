@@ -37,7 +37,7 @@ const Signup = () => {
   const { showToast } = useToast();
 
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`])[A-Za-z\d@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/~`]{8,}$/;
+    /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).*$/;
 
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
@@ -113,16 +113,18 @@ const Signup = () => {
       });
       showToast(
         "success",
-        "Success",
-        response.data.message || "Process Succeded",
+        "Account Created",
+        response.data.message ||
+          "Your account has been created. Check your email for the verification code.",
       );
       setIsSignupEmailSent(true);
     } catch (error) {
       console.error(error);
       showToast(
         "error",
-        "Verification Failed",
-        error.response?.data?.message || "Process Failed",
+        "Signup Failed",
+        error.response?.data?.message ||
+          "We could not create your account right now. Please try again.",
       );
     } finally {
       setIsSubmitting(false);

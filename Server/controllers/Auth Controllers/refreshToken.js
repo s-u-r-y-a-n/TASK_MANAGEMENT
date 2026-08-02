@@ -1,5 +1,6 @@
 import UserModel from "../../models/userModel.js";
 import jwt from "jsonwebtoken";
+import { createAuthTokens } from "../../utils/authUtils.js";
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
@@ -9,14 +10,14 @@ const refreshToken = async (request, response) => {
   if (!authorizationHeader) {
     return response.status(401).json({
       success: false,
-      message: "Authorization header is required",
+      message: "Authorization is required.",
     });
   }
 
   if (!authorizationHeader.startsWith("Bearer ")) {
     return response.status(401).json({
       success: false,
-      message: "Invalid authorization header format",
+      message: "Authorization must use the Bearer token format.",
     });
   }
 
@@ -25,7 +26,7 @@ const refreshToken = async (request, response) => {
   if (!incomingRefreshToken) {
     return response.status(401).json({
       success: false,
-      message: "Refresh token is required",
+      message: "Refresh token is required.",
     });
   }
 
@@ -40,7 +41,7 @@ const refreshToken = async (request, response) => {
     if (!user) {
       return response.status(404).json({
         success: false,
-        message: "User not found",
+        message: "No account was found for this session.",
       });
     }
 
@@ -51,7 +52,7 @@ const refreshToken = async (request, response) => {
     if (!storedRefreshToken) {
       return response.status(401).json({
         success: false,
-        message: "Invalid refresh token",
+        message: "Your session is invalid. Please log in again.",
       });
     }
 
@@ -70,26 +71,26 @@ const refreshToken = async (request, response) => {
       success: true,
       accessToken,
       refreshToken: newRefreshToken,
-      message: "Tokens generated successfully",
+      message: "Session refreshed successfully.",
     });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       return response.status(401).json({
         success: false,
-        message: "Refresh token has expired. Please login again",
+        message: "Your session has expired. Please log in again.",
       });
     }
 
     if (error.name === "JsonWebTokenError") {
       return response.status(401).json({
         success: false,
-        message: "Invalid refresh token",
+        message: "Your session is invalid. Please log in again.",
       });
     }
 
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not refresh your session right now. Please log in again.",
     });
   }
 };

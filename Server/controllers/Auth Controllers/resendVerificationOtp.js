@@ -10,7 +10,7 @@ const resendVerificationOtp = async function (request, response) {
   if (!email) {
     return response.status(400).json({
       success: false,
-      message: "Email is required",
+      message: "Please enter your email address.",
     });
   }
 
@@ -26,14 +26,14 @@ const resendVerificationOtp = async function (request, response) {
     if (!existingUser) {
       return response.status(404).json({
         success: false,
-        message: "Account with this email does not exists",
+        message: "No account was found with this email address.",
       });
     }
 
     if (existingUser.isAccountVerified) {
       return response.status(400).json({
         success: false,
-        message: "Account already verified. Please login using the credentials",
+        message: "This account is already verified. Please log in.",
       });
     }
 
@@ -52,11 +52,11 @@ const resendVerificationOtp = async function (request, response) {
 
 Welcome to Taskify! We're excited to have you on board.
 
-To complete your account registration, please verify your email address using the One-Time Password (OTP) below:
+To complete your account registration, please verify your email address using the code below:
 
-Verification OTP: ${verifyOtp}
+Verification code: ${verifyOtp}
 
-This OTP is valid for ${OTP_EXPIRY_TIME} minutes.
+This code is valid for ${OTP_EXPIRY_TIME} minutes.
 
 If you did not create a Taskify account, please ignore this email. No further action is required.
 
@@ -69,12 +69,12 @@ The Taskify Team`,
     return response.status(200).json({
       success: true,
       message:
-        "OTP sent to your registered email, Please verify your email using the OTP.",
+        "A new verification code has been sent to your email.",
     });
   } catch (error) {
     return response.status(500).json({
       success: false,
-      message: error.message,
+      message: "We could not send a verification code right now. Please try again.",
     });
   }
 };

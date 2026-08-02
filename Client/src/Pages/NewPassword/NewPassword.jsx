@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
@@ -39,14 +39,16 @@ const NewPassword = () => {
       console.log(response);
       showToast(
         "success",
-        "Success",
-        response.data.message || "Email verified successfully.",
+        "Password Updated",
+        response.data.message ||
+          "Your password has been updated. Please log in with your new password.",
       );
     } catch (error) {
       showToast(
         "error",
-        "Verification Failed",
-        error.response?.data?.message || "Unable to verify email.",
+        "Password Reset Failed",
+        error.response?.data?.message ||
+          "We could not update your password. Please try again.",
       );
       console.error(error);
     } finally {
