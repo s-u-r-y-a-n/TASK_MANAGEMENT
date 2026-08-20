@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.scss";
 import { Link } from "react-router-dom";
 import useToast from "../../hooks/useToast";
@@ -31,6 +32,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const passwordRegex =
     /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).*$/;
@@ -104,6 +106,7 @@ const Login = () => {
         "Logged In",
         response.data.message || "You have been logged in successfully.",
       );
+      navigate("/home");
     } catch (error) {
       console.error(error);
       showToast(

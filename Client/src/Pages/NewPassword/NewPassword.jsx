@@ -1,22 +1,35 @@
 import { useContext, useRef, useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
 import "./NewPassword.scss";
 import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const NewPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { email, otp } = useContext(AppContext);
   const [newPassword, setNewPassword] = useState("");
   const toast = useRef(null);
+  const navigate = useNavigate();
 
   function handleChange(event) {
     setNewPassword(event.target.value);
   }
+
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
   const showToast = (severity, summary, detail, life = 3000) => {
     toast.current?.show({
@@ -43,6 +56,7 @@ const NewPassword = () => {
         response.data.message ||
           "Your password has been updated. Please log in with your new password.",
       );
+      navigate("/login");
     } catch (error) {
       showToast(
         "error",
@@ -71,11 +85,28 @@ const NewPassword = () => {
         <TextField
           id="outlined-password-input"
           label="Password"
-          type="password"
+          type={showPassword ? "text" : "password"}
           required
           value={newPassword}
           onChange={handleChange}
           name="newPassword"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
         />
         <Button
           variant="contained"

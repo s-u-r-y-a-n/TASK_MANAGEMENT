@@ -5,6 +5,7 @@ import { Toast } from "primereact/toast";
 import axios from "axios";
 import { AppContext } from "../../Context/AppContext";
 import CountdownTimer from "../../Components/PasswordValidation/Timer/CountdownTimer";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -21,6 +22,7 @@ const OtpInput = ({
   const [disable, setDisable] = useState(true);
   const inputRefs = useRef([]);
   const toast = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
@@ -66,6 +68,7 @@ const OtpInput = ({
         "Email Verified",
         response.data.message || "Your email has been verified successfully.",
       );
+      navigate("/home");
     } catch (error) {
       console.error(error);
 
