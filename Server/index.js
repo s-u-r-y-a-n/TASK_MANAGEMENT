@@ -1,17 +1,10 @@
-import express, { request, response } from "express";
+import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
-import login from "./controllers/Auth Controllers/login.js";
-import refreshToken from "./controllers/Auth Controllers/refreshToken.js";
-import signup from "./controllers/Auth Controllers/signup.js";
-import verifyEmail from "./controllers/Auth Controllers/verifyEmail.js";
-import resetOtp from "./controllers/Auth Controllers/resetOtp.js";
-import validateResetOtp from "./controllers/Auth Controllers/validateResetOtp.js";
-import resetPassword from "./controllers/Auth Controllers/resetPassword.js";
-import resendVerificationOtp from "./controllers/Auth Controllers/resendVerificationOtp.js";
-import createList from "./controllers/Task List Controllers/createList.js";
+import authRoutes from "./routes/authRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
 
@@ -50,25 +43,8 @@ app.get("/", function (request, response) {
   });
 });
 
-app.post("/signup", (request, response) => signup(request, response));
-app.post("/login", (request, response) => login(request, response));
-app.post("/verify-email", (request, response) =>
-  verifyEmail(request, response),
-);
-app.post("/reset-otp", (request, response) => resetOtp(request, response));
-app.post("/refreshtoken", (request, response) =>
-  refreshToken(request, response),
-);
-app.post("/valiate-reset-otp", (request, response) =>
-  validateResetOtp(request, response),
-);
-app.post("/reset-password", (request, response) =>
-  resetPassword(request, response),
-);
-app.post("/resend-verification-otp", (request, response) =>
-  resendVerificationOtp(request, response),
-);
-app.post("/create-list", (request, response) => createList(request, response));
+app.use(authRoutes);
+app.use(taskRoutes);
 
 app.use((error, request, response, next) => {
   if (error instanceof SyntaxError && "body" in error) {

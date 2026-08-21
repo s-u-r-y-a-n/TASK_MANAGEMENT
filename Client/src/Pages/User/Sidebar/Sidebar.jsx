@@ -37,7 +37,7 @@ const menuItems = [
   },
 ];
 
-const Sidebar = ({ lists = [] }) => {
+const Sidebar = ({ lists = ["Name", "Surya","Surya"] }) => {
   const [open, setOpen] = useState(true);
 
   const handleDrawerToggle = () => {
