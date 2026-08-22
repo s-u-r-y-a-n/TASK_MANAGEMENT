@@ -7,6 +7,7 @@ import PasswordReset from "../../Reset Password/PasswordReset.jsx";
 import Task from "../Task/Task.jsx";
 import Home from "../Home/Home.jsx";
 import { ProtectedRoutes } from "../../../utils/ProtectedRoutes.jsx";
+import { TaskList } from "../Task/TaskList.jsx";
 
 const Navigation = () => {
   return (
@@ -17,7 +18,7 @@ const Navigation = () => {
       <Route path="/reset-password" element={<PasswordReset />} />
       <Route element={<ProtectedRoutes />}>
         <Route path="/home" element={<Home />}>
-          <Route index element={<Task />} />
+          <Route index element={<TaskList />} />
         </Route>
       </Route>
     </Routes>

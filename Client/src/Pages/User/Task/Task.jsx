@@ -1,13 +1,13 @@
 import React from "react";
-
-
+import { useState } from "react";
 
 const Task = () => {
-  return (
-    <div>
-      
-    </div>
-  );
+  const [tasks, setTasks] = useState([]);
+  
+
+  return <div>
+    
+  </div>;
 };
 
 export default Task;
