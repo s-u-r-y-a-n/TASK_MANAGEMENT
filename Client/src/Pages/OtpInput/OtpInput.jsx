@@ -63,12 +63,15 @@ const OtpInput = ({
         email,
       });
 
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+
       showToast(
         "success",
         "Email Verified",
         response.data.message || "Your email has been verified successfully.",
       );
-      navigate("/home");
+      navigate("/home", { replace: true });
     } catch (error) {
       console.error(error);
 

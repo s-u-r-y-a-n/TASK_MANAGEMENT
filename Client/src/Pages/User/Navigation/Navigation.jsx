@@ -6,6 +6,7 @@ import OtpInput from "../../OtpInput/OtpInput.jsx";
 import PasswordReset from "../../Reset Password/PasswordReset.jsx";
 import Task from "../Task/Task.jsx";
 import Home from "../Home/Home.jsx";
+import { ProtectedRoutes } from "../../../utils/ProtectedRoutes.jsx";
 
 const Navigation = () => {
   return (
@@ -14,9 +15,10 @@ const Navigation = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/otp" element={<OtpInput />} />
       <Route path="/reset-password" element={<PasswordReset />} />
-      <Route path="/reset-password" element={<PasswordReset />} />
-      <Route path="/home" element={<Home />}>
-        <Route index element={<Task />} />
+      <Route element={<ProtectedRoutes />}>
+        <Route path="/home" element={<Home />}>
+          <Route index element={<Task />} />
+        </Route>
       </Route>
     </Routes>
   );

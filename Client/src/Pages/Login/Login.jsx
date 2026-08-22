@@ -97,6 +97,8 @@ const Login = () => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/login`, loginForm);
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
       setLoginForm({
         email: "",
         password: "",

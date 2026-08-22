@@ -4,9 +4,8 @@ import { normalizeText } from "../../utils/inputFields.js";
 
 const createList = async (req, res) => {
   try {
-    const userId = normalizeText(req.body.userId);
-    const listName = normalizeText(req.body.listName);
-
+    const userId = normalizeText(req.user?.id);
+    const listName = normalizeText(req.body?.listName);
     if (!userId) {
       return res.status(400).json({
         success: false,
