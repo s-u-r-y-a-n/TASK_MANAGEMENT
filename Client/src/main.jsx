@@ -6,17 +6,17 @@ import { BrowserRouter } from "react-router-dom";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-import { AppContextProvider } from "./Context/AppContext.jsx";
-import ToastProvider from "./Context/ToastContext.jsx";
+import { Provider } from "react-redux";
+import ToastNotifications from "./Components/ToastNotifications/ToastNotifications.jsx";
+import { store } from "./store/store.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <AppContextProvider>
-        <ToastProvider>
+      <Provider store={store}>
+        <ToastNotifications />
           <App />
-        </ToastProvider>
-      </AppContextProvider>
+      </Provider>
     </BrowserRouter>
   </StrictMode>,
 );

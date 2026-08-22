@@ -1,26 +1,29 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import "./PasswordReset.scss";
 import { Box, Button, TextField } from "@mui/material";
-import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
 import OtpInput from "../OtpInput/OtpInput";
 import NewPassword from "../NewPassword/NewPassword";
 import useToast from "../../hooks/useToast";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setEmail, setIsEmailSent } from "../../store/appSlice";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const PasswordReset = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { email, setEmail, isOtpSubmitted, isEmailSent, setIsEmailSent } =
-    useContext(AppContext);
+  const { email, isOtpSubmitted, isEmailSent } = useSelector(
+    (state) => state.app,
+  );
+  const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState(false);
 
   const { showToast } = useToast();
 
   function handleChange(event) {
-    setEmail(event.target.value);
+    dispatch(setEmail(event.target.value));
     if (error) {
       setError(false);
       setErrorMessage("");
@@ -58,7 +61,7 @@ const PasswordReset = () => {
     try {
       const response = await axios.post(`${API_BASE_URL}/reset-otp`, { email });
       console.log(response);
-      setIsEmailSent(true);
+      dispatch(setIsEmailSent(true));
       showToast(
         "success",
         "Code Sent",
@@ -118,7 +121,6 @@ const PasswordReset = () => {
         {isEmailSent && !isOtpSubmitted && (
           <OtpInput
             isEmailSent={isEmailSent}
-            setIsEmailSent={setIsEmailSent}
             email={email}
             resetPasswordSendOtp={resetPasswordSendOtp}
           />

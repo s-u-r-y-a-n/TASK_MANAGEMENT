@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -8,37 +8,28 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
 import "./NewPassword.scss";
-import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
+import { useSelector } from "react-redux";
+import useToast from "../../hooks/useToast";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const NewPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { email, otp } = useContext(AppContext);
+  const { email, otp } = useSelector((state) => state.app);
   const [newPassword, setNewPassword] = useState("");
-  const toast = useRef(null);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   function handleChange(event) {
     setNewPassword(event.target.value);
   }
 
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
-
-  const showToast = (severity, summary, detail, life = 3000) => {
-    toast.current?.show({
-      severity,
-      summary,
-      detail,
-      life,
-    });
-  };
 
   async function resetPassword(event) {
     event.preventDefault();
@@ -72,8 +63,6 @@ const NewPassword = () => {
 
   return (
     <div className="new-password-parent">
-      <Toast ref={toast} />
-
       <Box
         component="form"
         className="new-password-form"

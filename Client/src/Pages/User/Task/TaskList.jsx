@@ -5,8 +5,6 @@ import Modal from "../../../Components/Modal/Modal";
 export const TaskList = () => {
   const [taskList, setTaskList] = useState("");
 
-  
-  
   return (
     <div>
       <Modal text={taskList} setText={setTaskList} />

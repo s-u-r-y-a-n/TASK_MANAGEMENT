@@ -1,16 +1,17 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import "./signup.scss";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Button, IconButton, InputAdornment } from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import OtpInput from "../OtpInput/OtpInput";
-import { AppContext } from "../../Context/AppContext";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import useToast from "../../hooks/useToast";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
+import { useDispatch, useSelector } from "react-redux";
+import { setEmail, setSignupDetails } from "../../store/appSlice";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -23,7 +24,11 @@ const Signup = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSignupEmailSent, setIsSignupEmailSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { email, setEmail, setSignupDetails } = useContext(AppContext);
+  const email = useSelector((state) => {
+    console.log("EMAIL STATE", state);
+    state.app.email;
+  });
+  const dispatch = useDispatch();
   const [validationError, setValidationError] = useState({
     username: false,
     email: false,
@@ -103,8 +108,8 @@ const Signup = () => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/signup`, signupForm);
-      setEmail(signupForm.email);
-      setSignupDetails(signupForm);
+      dispatch(setEmail(signupForm.email));
+      dispatch(setSignupDetails(signupForm));
       console.log("SIGNUPFORM", signupForm);
       setSignupForm({
         username: "",

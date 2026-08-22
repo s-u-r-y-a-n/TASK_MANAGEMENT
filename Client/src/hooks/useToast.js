@@ -1,14 +1,22 @@
-import { useContext } from "react";
-import { ToastContext } from "../Context/ToastContext";
+import { useDispatch } from "react-redux";
+import { showToast as showToastAction } from "../store/toastSlice";
 
 const useToast = () => {
-  const context = useContext(ToastContext);
+  const dispatch = useDispatch();
 
-  if (!context) {
-    throw new Error("useToast must be used inside ToastProvider");
-  }
+  const showToast = (severity, summary, detail, life = 6000) => {
+    dispatch(
+      showToastAction({
+        id: crypto.randomUUID(),
+        severity,
+        summary,
+        detail,
+        life,
+      }),
+    );
+  };
 
-  return context;
+  return { showToast };
 };
 
 export default useToast;

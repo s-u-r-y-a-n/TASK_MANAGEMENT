@@ -1,11 +1,12 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./OtpInput.scss";
 import { Button, TextField } from "@mui/material";
-import { Toast } from "primereact/toast";
 import axios from "axios";
-import { AppContext } from "../../Context/AppContext";
 import CountdownTimer from "../../Components/PasswordValidation/Timer/CountdownTimer";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setIsOtpSubmitted, setOtp } from "../../store/appSlice";
+import useToast from "../../hooks/useToast";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -17,19 +18,16 @@ const OtpInput = ({
 }) => {
   const [otpInput, setOtpInput] = useState(Array.from({ length }, () => ""));
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setOtp, setIsOtpSubmitted, signupDetails } = useContext(AppContext);
+  const dispatch = useDispatch();
   const [resetKey, setResetKey] = useState(0);
   const [disable, setDisable] = useState(true);
   const inputRefs = useRef([]);
-  const toast = useRef(null);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
-
-  console.log("EMAILFROMOTPINPUT", email);
-  console.log("SIGNUPDETAILS", signupDetails);
 
   const handleResendOtp = async (event) => {
     if (isEmailSent) {
@@ -41,15 +39,6 @@ const OtpInput = ({
       setResetKey((prev) => prev + 1);
       setDisable(true);
     }
-  };
-
-  const showToast = (severity, summary, detail, life = 3000) => {
-    toast.current?.show({
-      severity,
-      summary,
-      detail,
-      life,
-    });
   };
 
   async function handleOtpSubmit(otp) {
@@ -128,7 +117,7 @@ const OtpInput = ({
         response.data.message ||
           "Your code has been verified. You can now set a new password.",
       );
-      setIsOtpSubmitted(true);
+      dispatch(setIsOtpSubmitted(true));
     } catch (error) {
       console.error(error);
 
@@ -162,11 +151,11 @@ const OtpInput = ({
     const combinedOtp = newOtp.join("");
 
     if (combinedOtp.length === length && !isEmailSent) {
-      setOtp(combinedOtp);
+      dispatch(setOtp(combinedOtp));
       handleOtpSubmit(combinedOtp);
     }
     if (combinedOtp.length === length && isEmailSent) {
-      setOtp(combinedOtp);
+      dispatch(setOtp(combinedOtp));
       handleResetOtpSubmit(combinedOtp);
     }
   }
@@ -224,10 +213,10 @@ const OtpInput = ({
 
     if (pastedOtp.length === length) {
       if (isEmailSent) {
-        setOtp(pastedOtp);
+        dispatch(setOtp(pastedOtp));
         handleResetOtpSubmit(pastedOtp);
       } else {
-        setOtp(pastedOtp);
+        dispatch(setOtp(pastedOtp));
         handleOtpSubmit(pastedOtp);
       }
     } else {
@@ -237,8 +226,6 @@ const OtpInput = ({
 
   return (
     <div className="otp-parent">
-      <Toast ref={toast} />
-
       <h2 className="otp-title">Verify Your Email</h2>
 
       <p className="otp-subtitle">
