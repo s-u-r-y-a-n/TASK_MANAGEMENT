@@ -14,7 +14,12 @@ import { TaskList } from "../Task/TaskList";
 
 const drawerWidth = 300;
 
-const Sidebar = ({ isOpen, onEditList, onDeleteList, onCreateList }) => {
+const Sidebar = ({
+  isOpen,
+  onEditList,
+  onDeleteList,
+  onCreateList,
+}) => {
   const theme = useTheme();
   const { taskLists } = useSelector((state) => state.task);
 
