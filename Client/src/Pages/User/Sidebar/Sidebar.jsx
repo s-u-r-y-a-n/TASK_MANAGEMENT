@@ -1,171 +1,98 @@
-import { useState } from "react";
 import {
+  Box,
+  Button,
+  Divider,
   Drawer,
   List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   ListSubheader,
   Toolbar,
-  Typography,
-  IconButton,
-  Divider,
+  useTheme,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { useSelector } from "react-redux";
+import { TaskList } from "../Task/TaskList";
 
-import MenuIcon from "@mui/icons-material/Menu";
-import HomeIcon from "@mui/icons-material/Home";
-import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+const drawerWidth = 300;
 
-const drawerWidth = 240;
-const collapsedWidth = 70;
-
-const menuItems = [
-  {
-    text: "Home",
-    icon: <HomeIcon />,
-  },
-  {
-    text: "Profile",
-    icon: <PersonIcon />,
-  },
-  {
-    text: "Settings",
-    icon: <SettingsIcon />,
-  },
-];
-
-const Sidebar = ({ lists = ["Name", "Surya","Surya"] }) => {
-  const [open, setOpen] = useState(true);
-
-  const handleDrawerToggle = () => {
-    setOpen((prev) => !prev);
-  };
+const Sidebar = ({ isOpen, onEditList, onDeleteList, onCreateList }) => {
+  const theme = useTheme();
+  const { taskLists } = useSelector((state) => state.task);
 
   return (
     <Drawer
       variant="permanent"
       sx={{
-        width: open ? drawerWidth : collapsedWidth,
+        width: isOpen ? drawerWidth : 0,
         flexShrink: 0,
-        transition: "width 0.3s ease",
-
+        transition: theme.transitions.create("width", {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
         "& .MuiDrawer-paper": {
-          width: open ? drawerWidth : collapsedWidth,
+          width: isOpen ? drawerWidth : 0,
           overflowX: "hidden",
-          transition: "width 0.3s ease",
-          boxSizing: "border-box",
+          borderRight: `1px solid ${theme.palette.divider}`,
+          transition: theme.transitions.create("width", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          backgroundColor: theme.palette.background.paper,
         },
       }}
     >
-      <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: open ? "space-between" : "center",
-          alignItems: "center",
-        }}
-      >
-        {open && (
-          <Typography variant="h6" noWrap>
-            Dashboard
-          </Typography>
-        )}
+      <Toolbar />
 
-        <IconButton onClick={handleDrawerToggle}>
-          <MenuIcon />
-        </IconButton>
-      </Toolbar>
-
-      <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton
+      <Box sx={{ flexGrow: 1, overflowY: "auto", overflowX: "hidden" }}>
+        <List
+          subheader={
+            <ListSubheader
+              component="div"
               sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
+                bgcolor: "transparent",
+                fontWeight: 600,
+                fontSize: "0.75rem",
+                textTransform: "uppercase",
+                letterSpacing: 1.1,
+                color: "text.secondary",
+                px: 3,
+                py: 0.5,
               }}
             >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
-              >
-                {item.icon}
-              </ListItemIcon>
-
-              <ListItemText
-                primary={item.text}
-                sx={{
-                  opacity: open ? 1 : 0,
-                  transition: "opacity 0.2s",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+              Lists
+            </ListSubheader>
+          }
+        >
+          <TaskList
+            taskLists={taskLists}
+            isSidebarOpen={isOpen}
+            onEditList={onEditList}
+            onDeleteList={onDeleteList}
+          />
+        </List>
+      </Box>
 
       <Divider />
 
-      <List
-        subheader={
-          <ListSubheader
-            component="div"
-            sx={{
-              bgcolor: "transparent",
-              opacity: open ? 1 : 0,
-              transition: "opacity 0.2s",
-            }}
-          >
-            Lists
-          </ListSubheader>
-        }
-      >
-        {lists.length > 0 ? (
-          lists.map((list) => {
-            const listName = typeof list === "string" ? list : list.listName;
-
-            return (
-              <ListItem key={typeof list === "string" ? list : list._id} disablePadding>
-                <ListItemButton
-                  sx={{
-                    minHeight: 44,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <FormatListBulletedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={listName}
-                    sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })
-        ) : (
-          <ListItem sx={{ px: 2.5, minHeight: 44 }}>
-            <ListItemText
-              primary="No lists yet"
-              secondary="Create a list to see it here"
-              sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
-            />
-          </ListItem>
-        )}
-      </List>
+      <Box sx={{ p: 1.5 }}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={onCreateList}
+          startIcon={<AddIcon />}
+          fullWidth
+          sx={{
+            justifyContent: "flex-start",
+            px: 2,
+            py: 1,
+            textTransform: "none",
+            fontWeight: 600,
+            borderRadius: 2,
+            borderStyle: "dashed",
+          }}
+        >
+          Create new List
+        </Button>
+      </Box>
     </Drawer>
   );
 };

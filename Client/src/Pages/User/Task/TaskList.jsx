@@ -1,65 +1,69 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import Modal from "../../../Components/Modal/Modal";
-import { useSelector, useDispatch } from "react-redux";
-import { setTasksLists } from "../../../store/taskSlice.js";
-import axios from "axios";
+import {
+  Box,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Tooltip,
+} from "@mui/material";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-export const TaskList = () => {
-  const [taskListName, setTaskListName] = useState("");
-  const { taskLists } = useSelector((state) => state.task);
-  const dispatch = useDispatch();
-  const accessToken = localStorage.getItem("accessToken");
-
-  console.log("Task Lists from Redux Store:", taskLists);
-
-  async function fetchTaskLists() {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/get-tasklists`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      dispatch(setTasksLists(response.data));
-    } catch (error) {
-      console.error("Error fetching task lists:", error);
-    }
+export const TaskList = ({ taskLists, isSidebarOpen, onEditList, onDeleteList }) => {
+  if (taskLists?.length === 0) {
+    return (
+      <ListItem sx={{ px: 2.5, py: 1.5 }}>
+        <ListItemText
+          primary="No lists yet"
+          secondary="Create a list to get started"
+          primaryTypographyProps={{ fontSize: "0.875rem", color: "text.secondary" }}
+          secondaryTypographyProps={{ fontSize: "0.75rem" }}
+        />
+      </ListItem>
+    );
   }
 
-  useEffect(() => {
-    fetchTaskLists();
-  }, []);
+  return taskLists?.map((list) => {
+    const listName = typeof list === "string" ? list : list.listName;
+    const listId = typeof list === "string" ? list : list._id;
 
-  async function createTaskList(event) {
-    event.preventDefault();
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/create-list`,
-        {
-          listName: taskListName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-      console.log("Task list created:", response.data);
-    } catch (error) {
-      console.error("Error creating task list:", error);
-    }
-  }
-
-  return (
-    <div>
-      <Modal
-        text={taskListName}
-        setText={setTaskListName}
-        handleSubmit={createTaskList}
-      />
-      <h1>{taskListName}</h1>
-    </div>
-  );
+    return (
+      <ListItem
+        key={listId}
+        disablePadding
+        sx={{
+          display: "block",
+          "&:hover .list-actions": { opacity: isSidebarOpen ? 1 : 0 },
+        }}
+        secondaryAction={
+          isSidebarOpen && (
+            <Box
+              className="list-actions"
+              sx={{ opacity: 0, transition: "opacity 0.2s ease-in-out", display: "flex", gap: 0.5, pr: 1 }}
+            >
+              <Tooltip title="Edit list">
+                <IconButton edge="end" size="small" onClick={(event) => { event.stopPropagation(); onEditList?.(list); }}>
+                  <ModeEditOutlineOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete list">
+                <IconButton edge="end" size="small" onClick={(event) => { event.stopPropagation(); onDeleteList?.(list); }} sx={{ "&:hover": { color: "error.main" } }}>
+                  <DeleteOutlineOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )
+        }
+      >
+        <ListItemButton
+          sx={{ minHeight: 48, px: 2.5, borderRadius: 1, mx: 1, mb: 0.5, "&:hover": { backgroundColor: "action.hover" } }}
+        >
+          <ListItemText
+            primary={listName}
+            primaryTypographyProps={{ fontSize: "0.875rem", fontWeight: 500, noWrap: true }}
+          />
+        </ListItemButton>
+      </ListItem>
+    );
+  });
 };
