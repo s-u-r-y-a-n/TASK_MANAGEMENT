@@ -25,9 +25,9 @@ const Signup = () => {
   const [isSignupEmailSent, setIsSignupEmailSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const email = useSelector((state) => {
-    console.log("EMAIL STATE", state);
-    state.app.email;
+    return state.app.email;
   });
+
   const dispatch = useDispatch();
   const [validationError, setValidationError] = useState({
     username: false,

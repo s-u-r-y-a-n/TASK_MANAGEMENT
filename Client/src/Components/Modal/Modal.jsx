@@ -5,8 +5,13 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import axios from "axios";
 
-export default function Modal({ text = "", setText = () => {} }) {
+export default function Modal({
+  text = "",
+  setText = () => {},
+  handleSubmit = () => {},
+}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -17,14 +22,12 @@ export default function Modal({ text = "", setText = () => {} }) {
     setOpen(false);
   };
 
-  //   const handleSubmit = () => {
-  //     event.preventDefault();
-  //     const formData = new FormData(event.currentTarget);
-  //     const formJson = Object.fromEntries((formData as any).entries());
-  //     const email = formJson.email;
-  //     console.log(email);
-  //     handleClose();
-  //   };
+  const onFormSubmit = (event) => {
+    event.preventDefault();
+    console.log("Form submitted with text:", text);
+    handleSubmit(event);
+    handleClose();
+  };
 
   return (
     <>
@@ -34,7 +37,7 @@ export default function Modal({ text = "", setText = () => {} }) {
       <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
         <DialogTitle>Create new list</DialogTitle>
         <DialogContent>
-          <form>
+          <form id="subscription-form" onSubmit={onFormSubmit}>
             <TextField
               autoFocus
               required
@@ -44,7 +47,7 @@ export default function Modal({ text = "", setText = () => {} }) {
               fullWidth
               variant="filled"
               placeholder="Enter list name"
-            //   value={text}
+              value={text}
               onChange={(e) => {
                 setText(e.target.value);
               }}

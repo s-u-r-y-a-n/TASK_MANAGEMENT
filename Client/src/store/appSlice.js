@@ -13,28 +13,28 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     setEmail: (state, action) => {
-      console.log("EMAIL STATE", state);
-      console.log("EMAIL ACTION", action);
+      // console.log("EMAIL STATE", state);
+      // console.log("EMAIL ACTION", action);
       state.email = action.payload;
     },
     setOtp: (state, action) => {
-      console.log("OTP STATE", state);
-      console.log("OTP ACTION", action);
+      // console.log("OTP STATE", state);
+      // console.log("OTP ACTION", action);
       state.otp = action.payload;
     },
     setIsOtpSubmitted: (state, action) => {
-      console.log("IS OTP SUBMITTED STATE", state);
-      console.log("IS OTP SUBMITTED ACTION", action);
+      // console.log("IS OTP SUBMITTED STATE", state);
+      // console.log("IS OTP SUBMITTED ACTION", action);
       state.isOtpSubmitted = action.payload;
     },
     setIsEmailSent: (state, action) => {
-      console.log("IS EMAIL SENT STATE", state);
-      console.log("IS EMAIL SENT ACTION", action);
+      // console.log("IS EMAIL SENT STATE", state);
+      // console.log("IS EMAIL SENT ACTION", action);
       state.isEmailSent = action.payload;
     },
     setSignupDetails: (state, action) => {
-      console.log("SIGNUP DETAILS STATE", state);
-      console.log("SIGNUP DETAILS ACTION", action);
+      // console.log("SIGNUP DETAILS STATE", state);
+      // console.log("SIGNUP DETAILS ACTION", action);
       state.signupDetails = action.payload;
     },
   },
