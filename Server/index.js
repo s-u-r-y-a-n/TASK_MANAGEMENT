@@ -20,13 +20,13 @@ if (!MONGODB_URL || !DB_PASSWORD || !DATABASE_NAME) {
 const mongoUrl = `${MONGODB_URL.replace("<db_password>", DB_PASSWORD)}/${DATABASE_NAME}`;
 
 // MIDDLEWARES
-app.use(express.json());
 app.use(
   cors({
     origin: true,
     credentials: true,
   }),
 );
+app.use(express.json());
 app.use(cookieParser());
 
 // CONSOLE LOGS
