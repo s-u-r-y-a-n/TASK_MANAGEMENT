@@ -62,8 +62,8 @@ const updateList = async (req, res) => {
       });
     }
 
-    const updatedList = await TaskListModel.findByIdAndUpdate(
-      listId,
+    const updatedList = await TaskListModel.findOneAndUpdate(
+      { _id: listId, userId },
       { listName: newListName },
       { new: true }
     );

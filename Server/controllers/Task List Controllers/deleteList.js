@@ -35,7 +35,10 @@ const deleteList = async (req, res) => {
       });
     }
 
-    const deletedList = await TaskListModel.findByIdAndDelete(listId);
+    const deletedList = await TaskListModel.findOneAndDelete({
+      _id: listId,
+      userId,
+    });
 
     if (!deletedList) {
       return res.status(404).json({

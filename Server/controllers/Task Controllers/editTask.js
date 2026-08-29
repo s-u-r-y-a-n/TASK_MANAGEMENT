@@ -3,9 +3,10 @@ import TaskModel from "../../models/taskModel.js";
 import TaskListModel from "../../models/taskListModel.js";
 import { normalizeText } from "../../utils/inputFields.js";
 
-const createTask = async (req, res) => {
+const editTask = async (req, res) => {
   try {
     const userId = normalizeText(req.user?.id);
+    const taskId = normalizeText(req.params.taskId);
     const listId = normalizeText(req.body?.listId);
     const title = normalizeText(req.body?.taskName);
     const description = normalizeText(req.body?.taskDescription);
@@ -15,14 +16,31 @@ const createTask = async (req, res) => {
     const starredInput = req.body?.starred;
     const taskFile = req.file || null;
 
-    console.log("TITLE", title);
-    console.log("TITLE", typeof title);
-    console.log(title == false);
-
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    if (!userId) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized.",
+        message: "User ID is required.",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({
+        success: false,
+        message: "User ID is invalid.",
+      });
+    }
+
+    if (!taskId) {
+      return res.status(400).json({
+        success: false,
+        message: "Task ID is required.",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Task ID is invalid.",
       });
     }
 
@@ -61,31 +79,32 @@ const createTask = async (req, res) => {
       });
     }
 
-    if (!["Low", "Medium", "High"].includes(priority)) {
+    if (priority && !["Low", "Medium", "High"].includes(priority)) {
       return res.status(400).json({
         success: false,
         message: "Priority must be Low, Medium, or High.",
       });
     }
 
-    if (!["Pending", "Completed"].includes(status)) {
+    if (status && !["Pending", "Completed"].includes(status)) {
       return res.status(400).json({
         success: false,
         message: "Status must be Pending or Completed.",
       });
     }
 
-    let starred = false;
-    if (typeof starredInput === "boolean") {
-      starred = starredInput;
-    } else if (starredInput !== undefined && starredInput !== "") {
-      if (starredInput !== "true" && starredInput !== "false") {
+    let starred = null;
+    if (starredInput !== undefined && starredInput !== "") {
+      if (typeof starredInput === "boolean") {
+        starred = starredInput;
+      } else if (starredInput === "true" || starredInput === "false") {
+        starred = starredInput === "true";
+      } else {
         return res.status(400).json({
           success: false,
           message: "Starred must be true or false.",
         });
       }
-      starred = starredInput === "true";
     }
 
     let dueDate = null;
@@ -99,6 +118,28 @@ const createTask = async (req, res) => {
       }
     }
 
+    const task = await TaskModel.findById(taskId);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found.",
+      });
+    }
+
+    if (task.userId.toString() !== userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized.",
+      });
+    }
+
+    if (task.listId.toString() !== listId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized.",
+      });
+    }
+
     const taskList = await TaskListModel.exists({ _id: listId, userId });
     if (!taskList) {
       return res.status(404).json({
@@ -107,38 +148,49 @@ const createTask = async (req, res) => {
       });
     }
 
-    const attachment = {
-      fileName: taskFile?.originalname || "",
-      fileUrl: taskFile
-        ? `data:${taskFile.mimetype};base64,${taskFile.buffer.toString("base64")}`
-        : "",
-      mimeType: taskFile?.mimetype || "",
-    };
+    const updateData = {};
+    if (title) {
+      updateData.title = title;
+    }
+    if (req.body?.taskDescription !== undefined) {
+      updateData.description = description;
+    }
+    if (dueDate) {
+      updateData.dueDate = dueDate;
+    }
+    if (priority) {
+      updateData.priority = priority;
+    }
+    if (status) {
+      updateData.status = status;
+    }
+    if (starred !== null) {
+      updateData.starred = starred;
+    }
+    if (taskFile) {
+      updateData.attachment = {
+        fileName: taskFile.originalname || "",
+        fileUrl: `data:${taskFile.mimetype};base64,${taskFile.buffer.toString("base64")}`,
+        mimeType: taskFile.mimetype || "",
+      };
+    }
 
-    const task = await TaskModel.create({
-      userId,
-      listId,
-      title,
-      description,
-      dueDate,
-      priority,
-      status,
-      starred,
-      attachment,
+    const updatedTask = await TaskModel.findByIdAndUpdate(taskId, updateData, {
+      new: true,
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
-      message: "Task created successfully.",
-      data: task,
+      message: "Task updated successfully.",
+      data: updatedTask,
     });
   } catch (error) {
-    console.error("Create Task Error:", error);
+    console.error("Edit Task Error:", error);
     return res.status(500).json({
       success: false,
-      message: "We could not create the task right now. Please try again.",
+      message: "We could not update the task right now. Please try again.",
     });
   }
 };
 
-export default createTask;
+export default editTask;
