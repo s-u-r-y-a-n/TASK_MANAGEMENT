@@ -8,6 +8,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import useToast from "../../../hooks/useToast";
 import Modal from "../../../Components/Modal/Modal";
 import { setTasksLists } from "../../../store/taskSlice";
+import { Task } from "../Task/Task";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -22,6 +23,8 @@ const Home = () => {
   const dispatch = useDispatch();
   const { showToast } = useToast();
   const accessToken = localStorage.getItem("accessToken");
+
+  console.log("SELECTED LIST", selectedList);
 
   useEffect(() => {
     const fetchTaskLists = async () => {
@@ -148,13 +151,11 @@ const Home = () => {
     if (modalMode === "create") return createTaskList();
     if (modalMode === "edit") return updateTaskList(selectedList._id, listName);
     if (modalMode === "delete") return deleteTaskList(selectedList._id);
-
-    // Add your delete API call here, then return true to close the modal.
     return false;
   };
 
   return (
-    <Box sx={{ minHeight: "100vh" }}>
+    <Box sx={{ minHeight: "100vh", border: "5px solid red" }}>
       <IconButton
         aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         onClick={() => setIsSidebarOpen((previous) => !previous)}
@@ -176,6 +177,7 @@ const Home = () => {
         onCreateList={openCreateListModal}
         onEditList={openEditListModal}
         onDeleteList={openDeleteListModal}
+        setSelectedList={setSelectedList}
       />
 
       <Modal
@@ -188,8 +190,12 @@ const Home = () => {
         modalMode={modalMode}
       />
 
-      <Box component="main" sx={{ p: 3, pt: 9 }}>
-        <Outlet />
+      <Box
+        component="main"
+        sx={{ p: 3, pt: 9 }}
+        style={{ border: "2px solid green", minHeight: "100vh", width: "100%" }}
+      >
+        <Task selectedList={selectedList} />
       </Box>
     </Box>
   );

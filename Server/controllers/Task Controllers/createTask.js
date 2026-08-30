@@ -7,17 +7,13 @@ const createTask = async (req, res) => {
   try {
     const userId = normalizeText(req.user?.id);
     const listId = normalizeText(req.body?.listId);
-    const title = normalizeText(req.body?.taskName);
-    const description = normalizeText(req.body?.taskDescription);
-    const dueDateInput = normalizeText(req.body?.taskDueDate);
+    const title = normalizeText(req.body?.title);
+    const description = normalizeText(req.body?.description);
+    const dueDateInput = normalizeText(req.body?.dueDate);
     const priority = normalizeText(req.body?.priority);
     const status = normalizeText(req.body?.status);
     const starredInput = req.body?.starred;
     const taskFile = req.file || null;
-
-    console.log("TITLE", title);
-    console.log("TITLE", typeof title);
-    console.log(title == false);
 
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(401).json({

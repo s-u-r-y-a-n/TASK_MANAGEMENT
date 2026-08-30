@@ -43,7 +43,6 @@ const searchAndFilterTasks = async (req, res) => {
       });
     }
 
-    // Handle both single listId and array of listIds
     let listIds = [];
     if (listId) {
       // Convert single string to array for uniform processing

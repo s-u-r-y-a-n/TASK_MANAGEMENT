@@ -14,6 +14,7 @@ export const TaskList = ({
   isSidebarOpen,
   onEditList,
   onDeleteList,
+  setSelectedList,
 }) => {
   if (taskLists?.length === 0) {
     return (
@@ -36,74 +37,81 @@ export const TaskList = ({
     const listId = typeof list === "string" ? list : list._id;
 
     return (
-      <ListItem
-        key={listId}
-        disablePadding
-        sx={{
-          display: "block",
-          "&:hover .list-actions": { opacity: isSidebarOpen ? 1 : 0 },
+      <div
+        onClick={() => {
+          console.log("LIST ID", listId);
+          setSelectedList(list);
         }}
-        secondaryAction={
-          isSidebarOpen && (
-            <Box
-              className="list-actions"
-              sx={{
-                opacity: 0,
-                transition: "opacity 0.2s ease-in-out",
-                display: "flex",
-                gap: 0.5,
-                pr: 1,
-              }}
-            >
-              <Tooltip title="Edit list">
-                <IconButton
-                  edge="end"
-                  size="small"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onEditList?.(list);
-                  }}
-                >
-                  <ModeEditOutlineOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete list">
-                <IconButton
-                  edge="end"
-                  size="small"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onDeleteList?.(list);
-                  }}
-                  sx={{ "&:hover": { color: "error.main" } }}
-                >
-                  <DeleteOutlineOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          )
-        }
       >
-        <ListItemButton
+        <ListItem
+          key={listId}
+          disablePadding
           sx={{
-            minHeight: 48,
-            px: 2.5,
-            borderRadius: 1,
-            mx: 1,
-            mb: 0.5,
-            "&:hover": { backgroundColor: "action.hover" },
+            display: "block",
+            "&:hover .list-actions": { opacity: isSidebarOpen ? 1 : 0 },
           }}
+          secondaryAction={
+            isSidebarOpen && (
+              <Box
+                className="list-actions"
+                sx={{
+                  opacity: 0,
+                  transition: "opacity 0.2s ease-in-out",
+                  display: "flex",
+                  gap: 0.5,
+                  pr: 1,
+                }}
+              >
+                <Tooltip title="Edit list">
+                  <IconButton
+                    edge="end"
+                    size="small"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onEditList?.(list);
+                    }}
+                  >
+                    <ModeEditOutlineOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete list">
+                  <IconButton
+                    edge="end"
+                    size="small"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onDeleteList?.(list);
+                    }}
+                    sx={{ "&:hover": { color: "error.main" } }}
+                  >
+                    <DeleteOutlineOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )
+          }
         >
-          <ListItemText
-            primary={listName}
-            primaryTypographyProps={{
-              fontSize: "0.875rem",
-              fontWeight: 500,
-              noWrap: true,
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              px: 2.5,
+              borderRadius: 1,
+              mx: 1,
+              mb: 0.5,
+              "&:hover": { backgroundColor: "action.hover" },
             }}
-          />
-        </ListItemButton>
-      </ListItem>
+          >
+            <ListItemText
+              primary={listName}
+              primaryTypographyProps={{
+                fontSize: "0.875rem",
+                fontWeight: 500,
+                noWrap: true,
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+      </div>
     );
   });
 };

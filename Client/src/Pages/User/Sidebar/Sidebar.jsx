@@ -19,6 +19,7 @@ const Sidebar = ({
   onEditList,
   onDeleteList,
   onCreateList,
+  setSelectedList,
 }) => {
   const theme = useTheme();
   const { taskLists } = useSelector((state) => state.task);
@@ -72,6 +73,7 @@ const Sidebar = ({
             isSidebarOpen={isOpen}
             onEditList={onEditList}
             onDeleteList={onDeleteList}
+            setSelectedList={setSelectedList}
           />
         </List>
       </Box>

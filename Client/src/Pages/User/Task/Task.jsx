@@ -1,13 +1,11 @@
 import React from "react";
-import { useState } from "react";
+import { CreateTask } from "./CreateTask";
 
-const Task = () => {
-  const [tasks, setTasks] = useState([]);
-  
-
-  return <div>
-    
-  </div>;
+export const Task = ({ selectedList }) => {
+  console.log(selectedList);
+  return (
+    <div>
+      <CreateTask selectedList={selectedList} />
+    </div>
+  );
 };
-
-export default Task;

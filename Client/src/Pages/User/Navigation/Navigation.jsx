@@ -4,7 +4,6 @@ import Signup from "../../Signup/Signup.jsx";
 import Login from "../../Login/Login.jsx";
 import OtpInput from "../../OtpInput/OtpInput.jsx";
 import PasswordReset from "../../Reset Password/PasswordReset.jsx";
-import Task from "../Task/Task.jsx";
 import Home from "../Home/Home.jsx";
 import { ProtectedRoutes } from "../../../utils/ProtectedRoutes.jsx";
 import { TaskList } from "../Task/TaskList.jsx";
