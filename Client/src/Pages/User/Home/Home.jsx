@@ -157,7 +157,7 @@ const Home = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", border: "5px solid red" }}>
+    <Box sx={{ minHeight: "100vh" }}>
       <IconButton
         aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         onClick={() => setIsSidebarOpen((previous) => !previous)}
@@ -196,7 +196,7 @@ const Home = () => {
       <Box
         component="main"
         sx={{ p: 3, pt: 9 }}
-        style={{ border: "2px solid green", minHeight: "100vh", width: "100%" }}
+        style={{ minHeight: "100vh", width: "100%" }}
       >
         <Task selectedList={selectedList} />
       </Box>

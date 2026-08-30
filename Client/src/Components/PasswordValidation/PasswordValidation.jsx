@@ -1,4 +1,4 @@
-import "./PasswordValidation.scss";
+import "./styles/PasswordValidation.scss";
 
 const passwordRules = [
   {

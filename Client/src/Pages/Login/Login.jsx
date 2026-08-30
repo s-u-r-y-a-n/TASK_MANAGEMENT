@@ -8,7 +8,7 @@ import {
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.scss";
+import "./styles/Login.scss";
 import { Link } from "react-router-dom";
 import useToast from "../../hooks/useToast";
 import Visibility from "@mui/icons-material/Visibility";

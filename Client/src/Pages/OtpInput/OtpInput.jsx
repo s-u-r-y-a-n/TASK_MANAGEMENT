@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "./OtpInput.scss";
+import "./styles/OtpInput.scss";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import CountdownTimer from "../../Components/PasswordValidation/Timer/CountdownTimer";

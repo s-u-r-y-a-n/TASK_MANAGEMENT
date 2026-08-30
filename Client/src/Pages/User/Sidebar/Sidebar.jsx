@@ -12,7 +12,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { TaskList } from "../Task/TaskList";
-import "./Sidebar.scss";
+import "./styles/Sidebar.scss";
 
 const drawerWidth = 290;
 

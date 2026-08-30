@@ -9,7 +9,7 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
-import "./NewPassword.scss";
+import "./styles/NewPassword.scss";
 import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 import { useSelector } from "react-redux";

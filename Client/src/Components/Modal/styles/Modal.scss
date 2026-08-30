@@ -1,4 +1,5 @@
-@import "../../variables.scss";
+@use "sass:color";
+@use "../../../styles/variables" as *;
 
 .custom-app-modal {
   .modal-paper-container {
@@ -52,7 +53,7 @@
         }
 
         &:hover fieldset {
-          border-color: darken(#e0e2e6, 10%);
+          border-color: color.adjust(#e0e2e6, $lightness: -10%);
         }
 
         &.Mui-focused {
@@ -119,7 +120,7 @@
         background-color: $danger-color !important;
 
         &:hover {
-          background-color: darken(#d93025, 8%) !important;
+          background-color: color.adjust(#d93025, $lightness: -8%) !important;
         }
       }
     }

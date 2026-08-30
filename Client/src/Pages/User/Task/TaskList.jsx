@@ -12,7 +12,7 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
-import "./TaskList.scss";
+import "./styles/TaskList.scss";
 
 export const TaskList = ({
   taskLists = [],

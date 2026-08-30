@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./PasswordReset.scss";
+import "./styles/PasswordReset.scss";
 import { Box, Button, TextField } from "@mui/material";
 import axios from "axios";
 import OtpInput from "../OtpInput/OtpInput";

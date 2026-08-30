@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import "./signup.scss";
+import "./styles/Signup.scss";
 import { useState } from "react";
 import { Button, IconButton, InputAdornment } from "@mui/material";
 import axios from "axios";
