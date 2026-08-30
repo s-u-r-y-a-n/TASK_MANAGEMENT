@@ -1,0 +1,55 @@
+@import "../../../variables.scss";
+
+.sidebar-scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem 0;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+}
+
+.sidebar-list-subheader {
+  background-color: transparent !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: $text-secondary !important;
+  padding: 0.5rem 1.5rem !important;
+  line-height: normal !important;
+}
+
+.sidebar-divider {
+  border-color: $border-color !important;
+}
+
+.sidebar-action-container {
+  padding: 1rem 1.25rem;
+  background-color: $bg-sidebar;
+
+  .create-list-button {
+    justify-content: flex-start !important;
+    padding: 0.65rem 1.2rem !important;
+    text-transform: none !important;
+    font-size: 0.885rem !important;
+    font-weight: 600 !important;
+    border-radius: $radius-pill !important;
+    border: 1px dashed $primary-color !important;
+    color: $primary-color !important;
+    background-color: $bg-surface !important;
+    transition: all $transition-default;
+
+    &:hover {
+      background-color: $primary-light !important;
+      border-style: solid !important;
+      transform: translateY(-1px);
+    }
+  }
+}

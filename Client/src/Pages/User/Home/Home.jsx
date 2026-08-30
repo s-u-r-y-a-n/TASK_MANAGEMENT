@@ -1,7 +1,6 @@
 import { Box, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Sidebar from "../Sidebar/Sidebar";
@@ -110,6 +109,9 @@ const Home = () => {
       );
       const updatedTaskLists = taskLists.filter((list) => list._id !== listId);
       dispatch(setTasksLists(updatedTaskLists));
+      if (selectedList?._id === listId) {
+        setSelectedList(null);
+      }
       showToast("success", "Deleted", response.data.message);
       return true;
     } catch (error) {
@@ -178,6 +180,7 @@ const Home = () => {
         onEditList={openEditListModal}
         onDeleteList={openDeleteListModal}
         setSelectedList={setSelectedList}
+        selectedListId={selectedList?._id || selectedList?.id}
       />
 
       <Modal

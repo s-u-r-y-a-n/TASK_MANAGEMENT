@@ -1,0 +1,127 @@
+@import "../../variables.scss";
+
+.custom-app-modal {
+  .modal-paper-container {
+    border-radius: 16px !important;
+    padding: 0.5rem 0.5rem 0.75rem !important;
+    background-color: $bg-surface !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+    border: 1px solid $border-color;
+  }
+
+  /* Header */
+  .modal-title {
+    font-size: 1.15rem !important;
+    font-weight: 600 !important;
+    color: $text-primary !important;
+    padding: 1.25rem 1.25rem 0.5rem !important;
+
+    &.delete-title {
+      color: $danger-color !important;
+    }
+  }
+
+  /* Body Content */
+  .modal-content {
+    padding: 0.75rem 1.25rem !important;
+
+    .modal-delete-text {
+      font-size: 0.9rem !important;
+      color: $text-secondary !important;
+      line-height: 1.5 !important;
+
+      strong {
+        color: $text-primary;
+        font-weight: 600;
+      }
+    }
+
+    .modal-text-field {
+      margin-top: 0.25rem;
+
+      .MuiOutlinedInput-root {
+        border-radius: $radius-sm;
+        background-color: $bg-sidebar;
+        font-size: 0.925rem;
+        transition:
+          background-color 0.2s,
+          border-color 0.2s;
+
+        fieldset {
+          border-color: $border-color;
+        }
+
+        &:hover fieldset {
+          border-color: darken(#e0e2e6, 10%);
+        }
+
+        &.Mui-focused {
+          background-color: $bg-surface;
+
+          fieldset {
+            border-color: $primary-color;
+            border-width: 2px;
+          }
+        }
+      }
+
+      input {
+        padding: 0.75rem 1rem;
+        color: $text-primary;
+
+        &::placeholder {
+          color: $text-secondary;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
+  /* Footer Action Buttons */
+  .modal-actions {
+    padding: 0.75rem 1.25rem !important;
+    gap: 0.5rem;
+
+    .modal-cancel-btn {
+      text-transform: none !important;
+      font-weight: 600 !important;
+      font-size: 0.875rem !important;
+      color: $text-secondary !important;
+      border-radius: $radius-pill !important;
+      padding: 0.4rem 1.1rem !important;
+
+      &:hover {
+        background-color: $bg-hover !important;
+        color: $text-primary !important;
+      }
+    }
+
+    .modal-confirm-btn {
+      text-transform: none !important;
+      font-weight: 600 !important;
+      font-size: 0.875rem !important;
+      border-radius: $radius-pill !important;
+      padding: 0.4rem 1.25rem !important;
+      background-color: $primary-color !important;
+      color: #ffffff !important;
+      box-shadow: none !important;
+
+      &:hover {
+        background-color: $primary-hover !important;
+      }
+
+      &:disabled {
+        background-color: rgba(0, 0, 0, 0.12) !important;
+        color: rgba(0, 0, 0, 0.26) !important;
+      }
+
+      &.delete-btn {
+        background-color: $danger-color !important;
+
+        &:hover {
+          background-color: darken(#d93025, 8%) !important;
+        }
+      }
+    }
+  }
+}

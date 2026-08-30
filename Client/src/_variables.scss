@@ -1,0 +1,31 @@
+// Brand & Accent Colors (Google Tasks Inspired)
+$primary-color: #1a73e8;
+$primary-hover: #1557b0;
+$primary-light: #e8f0fe;
+$primary-contrast: #ffffff;
+
+// Neutral Colors & Text
+$text-primary: #1f1f1f;
+$text-secondary: #5f6368;
+$text-disabled: #9aa0a6;
+
+// Backgrounds & Surfaces
+$bg-sidebar: #f8fafd;
+$bg-surface: #ffffff;
+$bg-hover: #f1f3f4;
+$bg-active: #e8f0fe;
+
+// Borders & Dividers
+$border-color: #e0e2e6;
+$border-light: #f1f3f4;
+
+// Status & Indicators
+$danger-color: #d93025;
+$danger-hover: #b3261e;
+
+// Layout Dimensions & Breakpoints
+$sidebar-width: 290px;
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-pill: 24px;
+$transition-default: 0.25s cubic-bezier(0.4, 0, 0.2, 1);

@@ -1,117 +1,116 @@
+import { useState } from "react";
 import {
-  Box,
-  IconButton,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
-  Tooltip,
+  IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import "./TaskList.scss";
 
 export const TaskList = ({
-  taskLists,
-  isSidebarOpen,
+  taskLists = [],
   onEditList,
   onDeleteList,
   setSelectedList,
+  selectedListId,
 }) => {
-  if (taskLists?.length === 0) {
-    return (
-      <ListItem sx={{ px: 2.5, py: 1.5 }}>
-        <ListItemText
-          primary="No lists yet"
-          secondary="Create a list to get started"
-          primaryTypographyProps={{
-            fontSize: "0.875rem",
-            color: "text.secondary",
-          }}
-          secondaryTypographyProps={{ fontSize: "0.75rem" }}
-        />
-      </ListItem>
-    );
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [activeMenuId, setActiveMenuId] = useState(null);
 
-  return taskLists?.map((list) => {
-    const listName = typeof list === "string" ? list : list.listName;
-    const listId = typeof list === "string" ? list : list._id;
+  const handleMenuOpen = (event, id) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setActiveMenuId(id);
+  };
 
-    return (
-      <div
-        onClick={() => {
-          console.log("LIST ID", listId);
-          setSelectedList(list);
-        }}
-      >
-        <ListItem
-          key={listId}
-          disablePadding
-          sx={{
-            display: "block",
-            "&:hover .list-actions": { opacity: isSidebarOpen ? 1 : 0 },
-          }}
-          secondaryAction={
-            isSidebarOpen && (
-              <Box
-                className="list-actions"
-                sx={{
-                  opacity: 0,
-                  transition: "opacity 0.2s ease-in-out",
-                  display: "flex",
-                  gap: 0.5,
-                  pr: 1,
-                }}
-              >
-                <Tooltip title="Edit list">
-                  <IconButton
-                    edge="end"
-                    size="small"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onEditList?.(list);
-                    }}
-                  >
-                    <ModeEditOutlineOutlinedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete list">
-                  <IconButton
-                    edge="end"
-                    size="small"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onDeleteList?.(list);
-                    }}
-                    sx={{ "&:hover": { color: "error.main" } }}
-                  >
-                    <DeleteOutlineOutlinedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )
-          }
-        >
-          <ListItemButton
-            sx={{
-              minHeight: 48,
-              px: 2.5,
-              borderRadius: 1,
-              mx: 1,
-              mb: 0.5,
-              "&:hover": { backgroundColor: "action.hover" },
-            }}
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setActiveMenuId(null);
+  };
+
+  return (
+    <div className="task-list-wrapper">
+      {taskLists.map((list) => {
+        const id = list._id || list.id;
+        const isSelected = selectedListId === id;
+
+        return (
+          <ListItem
+            key={id}
+            disablePadding
+            className="task-list-item-container"
           >
-            <ListItemText
-              primary={listName}
-              primaryTypographyProps={{
-                fontSize: "0.875rem",
-                fontWeight: 500,
-                noWrap: true,
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-      </div>
-    );
-  });
+            <ListItemButton
+              selected={isSelected}
+              onClick={() => setSelectedList(list)}
+              className={`task-list-button ${isSelected ? "selected" : ""}`}
+            >
+              <ListItemIcon className="task-list-icon">
+                <ListAltIcon fontSize="small" />
+              </ListItemIcon>
+
+              <ListItemText
+                primary={list.listName || list.name || list.title || "Unnamed List"}
+                primaryTypographyProps={{
+                  noWrap: true,
+                  className: "task-list-name",
+                }}
+              />
+
+              <IconButton
+                size="small"
+                onClick={(e) => handleMenuOpen(e, id)}
+                className="task-list-actions-btn"
+                aria-label="List options"
+              >
+                <MoreVertIcon fontSize="inherit" />
+              </IconButton>
+            </ListItemButton>
+          </ListItem>
+        );
+      })}
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        className="task-list-action-menu"
+      >
+        <MenuItem
+          onClick={() => {
+            const list = taskLists.find(
+              (taskList) => (taskList._id || taskList.id) === activeMenuId,
+            );
+            if (list) onEditList(list);
+            handleMenuClose();
+          }}
+        >
+          <EditOutlinedIcon fontSize="small" className="menu-item-icon" />
+          Edit name
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            const list = taskLists.find(
+              (taskList) => (taskList._id || taskList.id) === activeMenuId,
+            );
+            if (list) onDeleteList(list);
+            handleMenuClose();
+          }}
+          className="danger-item"
+        >
+          <DeleteIcon fontSize="small" className="menu-item-icon" />
+          Delete list
+        </MenuItem>
+      </Menu>
+    </div>
+  );
 };
+
+export default TaskList;

@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent";
 import { showToast } from "../../../store/toastSlice";
+import useToast from "../../../hooks/useToast";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -41,11 +42,11 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export const CreateTask = () => {
-  const dispatch = useDispatch();
   const { taskLists = [] } = useSelector((state) => state.task);
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskFile, setTaskFile] = useState(null);
+  const { showToast } = useToast();
 
   const [taskDetails, setTaskDetails] = useState({
     listId: "",
@@ -152,11 +153,9 @@ export const CreateTask = () => {
       formData.append("priority", taskDetails.priority);
       formData.append("status", taskDetails.status);
       formData.append("starred", String(taskDetails.starred));
-
       if (taskFile) {
-        formData.append("attachment", taskFile);
+        formData.append("taskFile", taskFile);
       }
-
       const response = await axios.post(
         `${API_BASE_URL}/create-task`,
         formData,
@@ -167,23 +166,19 @@ export const CreateTask = () => {
           },
         },
       );
-      dispatch(
-        showToast(
-          "success",
-          "Task Created",
-          response.data.message || "Your task has been created successfully.",
-        ),
-      );
-      handleClose();
+      (showToast(
+        "success",
+        "Task Created",
+        response.data.message || "Your task has been created successfully.",
+      ),
+        handleClose());
     } catch (error) {
       console.error("Error creating task:", error);
-      dispatch(
-        showToast(
-          "error",
-          "Task Creation Failed",
-          error.response?.data?.message ||
-            "We could not create your task right now. Please try again.",
-        ),
+      showToast(
+        "success",
+        "Task Creation Failed",
+        error.response?.data?.message ||
+          "We could not create your task right now. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
