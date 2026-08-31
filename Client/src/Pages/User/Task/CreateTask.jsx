@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent";
 import { showToast } from "../../../store/toastSlice";
+import { setTasks } from "../../../store/taskSlice.js";
 import useToast from "../../../hooks/useToast";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -47,6 +48,13 @@ export const CreateTask = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskFile, setTaskFile] = useState(null);
   const { showToast } = useToast();
+  const dispatch = useDispatch();
+  const { tasks } = useSelector((state) => {
+    console.log("STATE:", state);
+    return state.task;
+  });
+
+  console.log("TASK:", tasks);
 
   const [taskDetails, setTaskDetails] = useState({
     listId: "",
@@ -166,6 +174,7 @@ export const CreateTask = () => {
           },
         },
       );
+      dispatch(setTasks([...tasks, response.data.data]));
       (showToast(
         "success",
         "Task Created",

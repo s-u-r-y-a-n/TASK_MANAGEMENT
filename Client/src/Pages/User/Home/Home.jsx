@@ -3,6 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+
 import Sidebar from "../Sidebar/Sidebar";
 import useToast from "../../../hooks/useToast";
 import Modal from "../../../Components/Modal/Modal";
@@ -11,8 +12,10 @@ import { Task } from "../Task/Task";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+const SIDEBAR_WIDTH = 4;
+
 const Home = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [listName, setListName] = useState("");
   const [modalMode, setModalMode] = useState("create");
@@ -21,15 +24,16 @@ const Home = () => {
   const { taskLists } = useSelector((state) => state.task);
   const dispatch = useDispatch();
   const { showToast } = useToast();
-  const accessToken = localStorage.getItem("accessToken");
 
-  console.log("SELECTED LIST", selectedList);
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchTaskLists = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/get-tasklists`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
         dispatch(setTasksLists(response.data.data));
       } catch (error) {
@@ -43,13 +47,18 @@ const Home = () => {
   const createTaskList = async () => {
     const trimmedListName = listName.trim();
     if (!trimmedListName) return false;
-
     setIsCreatingList(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/create-list`,
-        { listName: trimmedListName },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
+        {
+          listName: trimmedListName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
       );
       dispatch(setTasksLists([...taskLists, response.data.data]));
       showToast("success", "Created", response.data.message);
@@ -72,16 +81,26 @@ const Home = () => {
   const updateTaskList = async (listId, newListName) => {
     const trimmedListName = newListName.trim();
     if (!trimmedListName) return false;
-
     setIsCreatingList(true);
     try {
       const response = await axios.put(
         `${API_BASE_URL}/update-list/${listId}`,
-        { listName: trimmedListName },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
+        {
+          listName: trimmedListName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
       );
       const updatedTaskLists = taskLists.map((list) =>
-        list._id === listId ? { ...list, listName: trimmedListName } : list,
+        list._id === listId
+          ? {
+              ...list,
+              listName: trimmedListName,
+            }
+          : list,
       );
       dispatch(setTasksLists(updatedTaskLists));
       showToast("success", "Updated", response.data.message);
@@ -105,7 +124,11 @@ const Home = () => {
     try {
       const response = await axios.delete(
         `${API_BASE_URL}/delete-list/${listId}`,
-        { headers: { Authorization: `Bearer ${accessToken}` } },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
       );
       const updatedTaskLists = taskLists.filter((list) => list._id !== listId);
       dispatch(setTasksLists(updatedTaskLists));
@@ -138,26 +161,39 @@ const Home = () => {
   const openEditListModal = (list) => {
     setModalMode("edit");
     setSelectedList(list);
-    setListName(list.listName);
+    setListName(list?.listName || "");
     setIsListModalOpen(true);
   };
 
   const openDeleteListModal = (list) => {
     setModalMode("delete");
     setSelectedList(list);
-    setListName(list.listName);
+    setListName(list?.listName || "");
     setIsListModalOpen(true);
   };
 
   const handleListAction = () => {
-    if (modalMode === "create") return createTaskList();
-    if (modalMode === "edit") return updateTaskList(selectedList._id, listName);
-    if (modalMode === "delete") return deleteTaskList(selectedList._id);
+    if (modalMode === "create") {
+      return createTaskList();
+    }
+    if (modalMode === "edit") {
+      return updateTaskList(selectedList?._id, listName);
+    }
+    if (modalMode === "delete") {
+      return deleteTaskList(selectedList?._id);
+    }
     return false;
   };
 
   return (
-    <Box sx={{ minHeight: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        width: "100%",
+        bgcolor: "#ffffff",
+      }}
+    >
       <IconButton
         aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         onClick={() => setIsSidebarOpen((previous) => !previous)}
@@ -165,17 +201,21 @@ const Home = () => {
           position: "fixed",
           top: 12,
           left: 12,
-          zIndex: (theme) => theme.zIndex.drawer + 1,
+          zIndex: (theme) => theme.zIndex.drawer + 2,
           bgcolor: "background.paper",
           boxShadow: 1,
-          "&:hover": { bgcolor: "action.hover" },
+          border: "1px solid #e0e2e6",
+          "&:hover": {
+            bgcolor: "#f1f3f4",
+          },
         }}
       >
-        <MenuIcon />
+        <MenuIcon fontSize="small" />
       </IconButton>
 
       <Sidebar
         isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
         onCreateList={openCreateListModal}
         onEditList={openEditListModal}
         onDeleteList={openDeleteListModal}
@@ -195,8 +235,22 @@ const Home = () => {
 
       <Box
         component="main"
-        sx={{ p: 3, pt: 9 }}
-        style={{ minHeight: "100vh", width: "100%" }}
+        sx={{
+          minHeight: "100vh",
+          boxSizing: "border-box",
+          width: isSidebarOpen ? `calc(100% - ${SIDEBAR_WIDTH}px)` : "100%",
+          marginLeft: isSidebarOpen ? `${SIDEBAR_WIDTH}px` : "0px",
+          p: {
+            xs: 2,
+            sm: 3,
+            md: 4,
+          },
+          pt: {
+            xs: 8,
+            sm: 9,
+          },
+          transition: "width 0.3s ease, margin-left 0.3s ease",
+        }}
       >
         <Task selectedList={selectedList} />
       </Box>

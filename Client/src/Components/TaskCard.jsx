@@ -12,25 +12,24 @@ import {
 
 const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
   const hasAttachment = task?.attachment?.fileName && task?.attachment?.fileUrl;
-
   const isPdf = task?.attachment?.mimeType === "application/pdf";
-
   const isImage = task?.attachment?.mimeType?.startsWith("image/");
+
+  console.log("TASK:", task);
+  console.log("HAS ATTACHMENT:", hasAttachment);
+  console.log("IS PDF:", isPdf);
+  console.log("IS IMAGE:", isImage);
 
   const handleOpenAttachment = () => {
     if (!hasAttachment) return;
-
     window.open(task.attachment.fileUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleDownload = () => {
     if (!hasAttachment) return;
-
     const link = document.createElement("a");
-
     link.href = task.attachment.fileUrl;
     link.download = task.attachment.fileName;
-
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -45,9 +44,7 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
         borderColor: "divider",
         borderRadius: 2,
         backgroundColor: "#fff",
-
         transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-
         "&:hover": {
           borderColor: "primary.light",
           boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
@@ -55,9 +52,6 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
       }}
     >
       <Box sx={{ p: { xs: 1.5, sm: 2 } }}>
-        {/* =========================
-            TOP SECTION
-        ========================== */}
         <Box
           sx={{
             display: "flex",
@@ -101,10 +95,9 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
                 wordBreak: "break-word",
               }}
             >
-              {task.title || "Untitled Task"}
+              {task.title}
             </Typography>
 
-            {/* Description */}
             {task.description ? (
               <Typography
                 variant="body2"
@@ -132,15 +125,10 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
             )}
           </Box>
 
-          {/* More menu */}
           <IconButton size="small" onClick={(event) => onMenu?.(event, task)}>
             <MoreVert fontSize="small" />
           </IconButton>
         </Box>
-
-        {/* =========================
-            ATTACHMENT
-        ========================== */}
 
         {hasAttachment && (
           <AttachmentPreview
@@ -153,10 +141,6 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
             onDownload={handleDownload}
           />
         )}
-
-        {/* =========================
-            BOTTOM METADATA
-        ========================== */}
 
         <Box
           sx={{
@@ -179,13 +163,10 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
               gap: 0.75,
             }}
           >
-            {/* Priority */}
             {task.priority && <PriorityChip priority={task.priority} />}
 
-            {/* Status */}
             {task.status && <StatusChip status={task.status} />}
 
-            {/* Due date */}
             {task.dueDate && (
               <Typography
                 variant="caption"
@@ -200,7 +181,6 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
             )}
           </Stack>
 
-          {/* Star */}
           <IconButton
             size="small"
             onClick={() => onStar?.(task)}
@@ -220,7 +200,13 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
   );
 };
 
-const AttachmentPreview = ({ fileName, isPdf, isImage, onOpen, onDownload }) => (
+const AttachmentPreview = ({
+  fileName,
+  isPdf,
+  isImage,
+  onOpen,
+  onDownload,
+}) => (
   <Box
     sx={{
       mt: 1.5,

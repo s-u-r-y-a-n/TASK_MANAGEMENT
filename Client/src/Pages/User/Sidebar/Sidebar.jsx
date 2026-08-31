@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { TaskList } from "../Task/TaskList";
 import "./styles/Sidebar.scss";
 
-const drawerWidth = 290;
+const drawerWidth = 260;
 
 const Sidebar = ({
   isOpen,
@@ -36,8 +36,14 @@ const Sidebar = ({
       onClose={onClose}
       ModalProps={{ keepMounted: true }}
       sx={{
-        width: !isMobile && isOpen ? drawerWidth : 0,
+        width: isMobile ? 0 : isOpen ? drawerWidth : 0,
         flexShrink: 0,
+        transition: !isMobile
+          ? theme.transitions.create("width", {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            })
+          : "none",
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",

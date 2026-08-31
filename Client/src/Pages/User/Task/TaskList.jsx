@@ -7,12 +7,15 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Checkbox,
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./styles/TaskList.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedListIds } from "../../../store/taskSlice.js";
 
 export const TaskList = ({
   taskLists = [],
@@ -23,6 +26,8 @@ export const TaskList = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [activeMenuId, setActiveMenuId] = useState(null);
+  const { selectedListIds } = useSelector((state) => state.task);
+  const dispatch = useDispatch();
 
   const handleMenuOpen = (event, id) => {
     event.stopPropagation();
@@ -33,6 +38,22 @@ export const TaskList = ({
   const handleMenuClose = () => {
     setAnchorEl(null);
     setActiveMenuId(null);
+  };
+
+  console.log("SELECTED LIST IDS:", selectedListIds);
+
+  const handleCheckboxChange = (event, checked) => {
+    console.log("CHECKBOX CHANGED");
+    console.log(checked);
+    console.log(event.target.value);
+    const listId = event.target.value;
+    if (checked) {
+      dispatch(setSelectedListIds([...selectedListIds, listId]));
+    } else {
+      dispatch(
+        setSelectedListIds(selectedListIds.filter((id) => id !== listId)),
+      );
+    }
   };
 
   return (
@@ -47,23 +68,28 @@ export const TaskList = ({
             disablePadding
             className="task-list-item-container"
           >
+            <Checkbox
+              checked={selectedListIds.includes(id)}
+              onChange={(event, checked) => {
+                setSelectedList(list);
+                handleCheckboxChange(event, checked);
+              }}
+              value={id}
+            />
             <ListItemButton
-              selected={isSelected}
-              onClick={() => setSelectedList(list)}
-              className={`task-list-button ${isSelected ? "selected" : ""}`}
+              className={`task-list-button ${
+                selectedListIds.includes(id) ? "checked" : ""
+              }`}
             >
-              <ListItemIcon className="task-list-icon">
-                <ListAltIcon fontSize="small" />
-              </ListItemIcon>
-
               <ListItemText
-                primary={list.listName || list.name || list.title || "Unnamed List"}
+                primary={
+                  list.listName || list.name || list.title || "Unnamed List"
+                }
                 primaryTypographyProps={{
                   noWrap: true,
                   className: "task-list-name",
                 }}
               />
-
               <IconButton
                 size="small"
                 onClick={(e) => handleMenuOpen(e, id)}

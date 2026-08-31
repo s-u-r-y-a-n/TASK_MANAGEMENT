@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import axios from "axios";
 import TaskCard from "../../../Components/TaskCard.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { setTasks } from "../../../store/taskSlice.js";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export const FetchTasks = ({ selectedList }) => {
-  const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+
+  const { tasks } = useSelector((state) => state.task);
+
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -33,6 +34,8 @@ export const FetchTasks = ({ selectedList }) => {
             signal: controller.signal,
           },
         );
+        dispatch(setTasks(response.data.data));
+
         setTasks(response.data.data);
       } catch (error) {
         if (axios.isCancel(error)) return;
@@ -46,7 +49,7 @@ export const FetchTasks = ({ selectedList }) => {
     fetchTasks();
 
     return () => controller.abort();
-  }, [accessToken, selectedList?._id]);
+  }, [accessToken, selectedList?._id, dispatch]);
 
   return (
     <div>
