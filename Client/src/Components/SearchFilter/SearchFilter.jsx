@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -27,8 +26,6 @@ const initialFilters = {
 };
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const accessToken = localStorage.getItem("accessToken");
-
 const SearchFilter = ({ onApplyFilters }) => {
   // const [filters, setFilters] = useState(initialFilters);
   const { selectedListIds, taskLists } = useSelector((state) => state.task);
@@ -68,14 +65,17 @@ const SearchFilter = ({ onApplyFilters }) => {
     try {
       const response = await axios.get(
         `${API_BASE_URL}/search-and-filter-tasks`,
-        { listId },
         {
           params: {
+            listId,
             search: customFilters.search.trim(),
             priority: customFilters.priority,
             status: customFilters.status,
             dueDate: customFilters.dueDate,
           },
+          // Serialize selected list IDs as repeated query parameters so the
+          // Express controller receives an array.
+          paramsSerializer: { indexes: null },
           headers: {
             Authorization: `Bearer ${token}`,
           },

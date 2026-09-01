@@ -9,7 +9,9 @@ const status = ["Pending", "Completed"];
 const searchAndFilterTasks = async (req, res) => {
   try {
     const userId = normalizeText(req.user?.id);
-    const listId = normalizeText(req.body?.listId);
+    // GET request filters belong in the query string. Express parses repeated
+    // `listId` parameters as an array (for example: ?listId=a&listId=b).
+    const listId = req.query?.listId ?? req.query?.["listId[]"];
     const searchInput = normalizeText(req.query.search);
     const priorityInput = normalizeText(req.query.priority);
     const statusInput = normalizeText(req.query.status);
@@ -45,7 +47,9 @@ const searchAndFilterTasks = async (req, res) => {
 
     let listIds = [];
     if (listId) {
-      const listIdArray = Array.isArray(listId) ? listId : [listId];
+      const listIdArray = (Array.isArray(listId) ? listId : [listId])
+        .map(normalizeText)
+        .filter(Boolean);
 
       for (const id of listIdArray) {
         if (!mongoose.Types.ObjectId.isValid(id)) {

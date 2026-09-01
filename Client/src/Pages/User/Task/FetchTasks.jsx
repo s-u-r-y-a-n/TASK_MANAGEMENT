@@ -11,6 +11,7 @@ export const FetchTasks = ({ selectedList }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const { selectedListIds } = useSelector((state) => state.task);
   const { search, priority, status, dueDate } = useSelector(
     (state) => state.task.filters,
   );
@@ -29,6 +30,7 @@ export const FetchTasks = ({ selectedList }) => {
           `${API_BASE_URL}/search-and-filter-tasks`,
           {
             params: {
+              listId: selectedListIds,
               search,
               priority,
               status,
@@ -36,6 +38,7 @@ export const FetchTasks = ({ selectedList }) => {
               // limit: 20,
               // skip: 0,
             },
+            paramsSerializer: { indexes: null },
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -43,7 +46,6 @@ export const FetchTasks = ({ selectedList }) => {
           },
         );
         dispatch(setTasks(response.data.data));
-        setTasks(response.data.data);
       } catch (error) {
         if (axios.isCancel(error)) return;
         console.error("Error fetching tasks:", error);
@@ -61,6 +63,7 @@ export const FetchTasks = ({ selectedList }) => {
   }, [
     accessToken,
     selectedList?._id,
+    selectedListIds,
     dispatch,
     search,
     priority,
