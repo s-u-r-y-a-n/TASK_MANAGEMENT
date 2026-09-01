@@ -13,6 +13,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { TaskList } from "../Task/TaskList";
 import "./styles/Sidebar.scss";
+import { CreateTask } from "../Task/CreateTask";
 
 const drawerWidth = 260;
 
@@ -63,6 +64,17 @@ const Sidebar = ({
       <Toolbar />
 
       <Box className="sidebar-scrollable-content">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            mb: 2,
+          }}
+        >
+          <CreateTask />
+        </Box>
         <List
           subheader={
             <ListSubheader component="div" className="sidebar-list-subheader">

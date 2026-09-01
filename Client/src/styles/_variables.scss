@@ -1,27 +1,29 @@
-// Brand & Accent Colors (Google Tasks Inspired)
-$primary-color: #1a73e8;
-$primary-hover: #1557b0;
-$primary-light: #e8f0fe;
+// Brand & Accent Colors
+$primary-color: #2563eb;
+$primary-hover: #1d4ed8;
+$primary-light: #dbeafe;
 $primary-contrast: #ffffff;
 
 // Neutral Colors & Text
-$text-primary: #1f1f1f;
-$text-secondary: #5f6368;
-$text-disabled: #9aa0a6;
+$text-primary: #0f172a;
+$text-secondary: #475569;
+$text-disabled: #94a3b8;
 
-// Backgrounds & Surfaces
-$bg-sidebar: #f8fafd;
-$bg-surface: #ffffff;
-$bg-hover: #f1f3f4;
-$bg-active: #e8f0fe;
+// Backgrounds & Surfaces (Noticeable Cool Tint)
+$bg-app: #e2e8f0; // Distinct cool slate-blue canvas
+$bg-sidebar: #ebf1f8; // Noticeably tinted blue sidebar
+$bg-surface: #ffffff; // Pure white modal/card (sharp contrast against background)
+$bg-subtle: #f0f5fa; // Tinted input background
+$bg-hover: #dbeafe; // Soft blue hover state
+$bg-active: #bfdbfe; // Rich active pill state
 
 // Borders & Dividers
-$border-color: #e0e2e6;
-$border-light: #f1f3f4;
+$border-color: #cbd5e1;
+$border-light: #e2e8f0;
 
-// Status & Indicators
-$danger-color: #d93025;
-$danger-hover: #b3261e;
+// Status
+$danger-color: #ef4444;
+$danger-hover: #dc2626;
 
 // Layout Dimensions & Breakpoints
 $sidebar-width: 290px;

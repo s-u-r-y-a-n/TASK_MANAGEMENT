@@ -7,6 +7,7 @@ import deleteList from "../controllers/Task List Controllers/deleteList.js";
 import upload from "../middlewares/upload.js";
 import createTask from "../controllers/Task Controllers/createTask.js";
 import getTasksByListId from "../controllers/Task Controllers/getTasks.js";
+import searchAndFilterTasks from "../controllers/Task Controllers/searchAndFilterTasks.js";
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.post(
   createTask,
 );
 router.get("/fetch-tasks/:listId", authenticateToken, getTasksByListId);
+router.get("/search-and-filter-tasks", authenticateToken, searchAndFilterTasks);
 
 export default router;

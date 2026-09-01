@@ -2,14 +2,12 @@ import { useState } from "react";
 import {
   ListItem,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
   IconButton,
   Menu,
   MenuItem,
   Checkbox,
 } from "@mui/material";
-import ListAltIcon from "@mui/icons-material/ListAlt";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,7 +20,6 @@ export const TaskList = ({
   onEditList,
   onDeleteList,
   setSelectedList,
-  selectedListId,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [activeMenuId, setActiveMenuId] = useState(null);
@@ -40,12 +37,7 @@ export const TaskList = ({
     setActiveMenuId(null);
   };
 
-  console.log("SELECTED LIST IDS:", selectedListIds);
-
   const handleCheckboxChange = (event, checked) => {
-    console.log("CHECKBOX CHANGED");
-    console.log(checked);
-    console.log(event.target.value);
     const listId = event.target.value;
     if (checked) {
       dispatch(setSelectedListIds([...selectedListIds, listId]));
@@ -60,7 +52,6 @@ export const TaskList = ({
     <div className="task-list-wrapper">
       {taskLists.map((list) => {
         const id = list._id || list.id;
-        const isSelected = selectedListId === id;
 
         return (
           <ListItem
@@ -68,19 +59,19 @@ export const TaskList = ({
             disablePadding
             className="task-list-item-container"
           >
-            <Checkbox
-              checked={selectedListIds.includes(id)}
-              onChange={(event, checked) => {
-                setSelectedList(list);
-                handleCheckboxChange(event, checked);
-              }}
-              value={id}
-            />
             <ListItemButton
               className={`task-list-button ${
                 selectedListIds.includes(id) ? "checked" : ""
               }`}
             >
+              <Checkbox
+                checked={selectedListIds.includes(id)}
+                onChange={(event, checked) => {
+                  setSelectedList(list);
+                  handleCheckboxChange(event, checked);
+                }}
+                value={id}
+              />
               <ListItemText
                 primary={
                   list.listName || list.name || list.title || "Unnamed List"

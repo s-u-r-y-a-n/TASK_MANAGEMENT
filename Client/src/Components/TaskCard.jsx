@@ -15,11 +15,6 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
   const isPdf = task?.attachment?.mimeType === "application/pdf";
   const isImage = task?.attachment?.mimeType?.startsWith("image/");
 
-  console.log("TASK:", task);
-  console.log("HAS ATTACHMENT:", hasAttachment);
-  console.log("IS PDF:", isPdf);
-  console.log("IS IMAGE:", isImage);
-
   const handleOpenAttachment = () => {
     if (!hasAttachment) return;
     window.open(task.attachment.fileUrl, "_blank", "noopener,noreferrer");

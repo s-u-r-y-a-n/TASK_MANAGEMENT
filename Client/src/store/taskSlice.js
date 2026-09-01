@@ -4,6 +4,12 @@ const initialState = {
   taskLists: [],
   tasks: [],
   selectedListIds: [],
+  filters: {
+    search: "",
+    priority: "",
+    status: "",
+    dueDate: "",
+  },
 };
 
 const taskSlice = createSlice({
@@ -19,8 +25,12 @@ const taskSlice = createSlice({
     setSelectedListIds: (state, action) => {
       state.selectedListIds = action.payload;
     },
+    setFilters: (state, action) => {
+      state.filters = action.payload;
+    },
   },
 });
 
-export const { setTasksLists, setTasks, setSelectedListIds } = taskSlice.actions;
+export const { setTasksLists, setTasks, setSelectedListIds, setFilters } =
+  taskSlice.actions;
 export default taskSlice.reducer;

@@ -50,11 +50,9 @@ export const CreateTask = () => {
   const { showToast } = useToast();
   const dispatch = useDispatch();
   const { tasks } = useSelector((state) => {
-    console.log("STATE:", state);
     return state.task;
   });
 
-  console.log("TASK:", tasks);
 
   const [taskDetails, setTaskDetails] = useState({
     listId: "",

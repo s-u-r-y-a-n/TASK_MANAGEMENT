@@ -1,13 +1,12 @@
-import React from "react";
 import { CreateTask } from "./CreateTask.jsx";
 import { FetchTasks } from "./FetchTasks.jsx";
+import SearchFilter from "../../../Components/SearchFilter/SearchFilter.jsx";
 
 export const Task = ({ selectedList }) => {
-  console.log(selectedList);
   return (
     <div>
+      <SearchFilter />
       <FetchTasks selectedList={selectedList} />
-      <CreateTask selectedList={selectedList} />
     </div>
   );
 };

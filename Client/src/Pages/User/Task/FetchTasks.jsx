@@ -11,53 +11,66 @@ export const FetchTasks = ({ selectedList }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const { search, priority, status, dueDate } = useSelector(
+    (state) => state.task.filters,
+  );
 
   const { tasks } = useSelector((state) => state.task);
 
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    if (!selectedList?._id || !accessToken) {
-      return;
-    }
-
     const controller = new AbortController();
-
     const fetchTasks = async () => {
       try {
         setIsLoading(true);
         setError(null);
         const response = await axios.get(
-          `${API_BASE_URL}/fetch-tasks/${selectedList._id}`,
+          `${API_BASE_URL}/search-and-filter-tasks`,
           {
-            headers: { Authorization: `Bearer ${accessToken}` },
+            params: {
+              search,
+              priority,
+              status,
+              dueDate,
+              // limit: 20,
+              // skip: 0,
+            },
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
             signal: controller.signal,
           },
         );
         dispatch(setTasks(response.data.data));
-
         setTasks(response.data.data);
       } catch (error) {
         if (axios.isCancel(error)) return;
         console.error("Error fetching tasks:", error);
         setError(error.response?.data?.message || "An error occurred.");
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchTasks();
 
     return () => controller.abort();
-  }, [accessToken, selectedList?._id, dispatch]);
+  }, [
+    accessToken,
+    selectedList?._id,
+    dispatch,
+    search,
+    priority,
+    status,
+    dueDate,
+  ]);
 
   return (
     <div>
-      {!selectedList ? (
-        <Typography variant="body2" color="text.secondary">
-          Select a task list to view its tasks.
-        </Typography>
-      ) : isLoading ? (
+      {isLoading ? (
         <CircularProgress />
       ) : error ? (
         <Typography variant="body2" color="error">

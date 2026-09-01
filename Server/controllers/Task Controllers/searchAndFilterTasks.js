@@ -45,10 +45,8 @@ const searchAndFilterTasks = async (req, res) => {
 
     let listIds = [];
     if (listId) {
-      // Convert single string to array for uniform processing
       const listIdArray = Array.isArray(listId) ? listId : [listId];
 
-      // Validate each listId
       for (const id of listIdArray) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(400).json({

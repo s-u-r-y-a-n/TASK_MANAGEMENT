@@ -1,21 +1,45 @@
 @use "sass:color";
-@use "../../../styles/variables" as *;
+@use "../../../styles/_variables.scss" as *;
 
 .custom-app-modal {
   .modal-paper-container {
     border-radius: 16px !important;
     padding: 0.5rem 0.5rem 0.75rem !important;
-    background-color: $bg-surface !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
-    border: 1px solid $border-color;
+    background: linear-gradient(
+      180deg,
+      color.adjust($bg-surface, $lightness: 1%) 0%,
+      $bg-surface 100%
+    ) !important;
+    box-shadow:
+      0 20px 40px -15px rgba(0, 0, 0, 0.15),
+      0 0 0 1px $border-color !important;
+    border: none;
+    overflow: hidden;
+    position: relative;
+
+    /* Subtle top accent bar dynamically derived from the primary color */
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        $primary-color 0%,
+        color.adjust($primary-color, $lightness: 15%) 100%
+      );
+    }
   }
 
   /* Header */
   .modal-title {
     font-size: 1.15rem !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     color: $text-primary !important;
     padding: 1.25rem 1.25rem 0.5rem !important;
+    letter-spacing: -0.01em;
 
     &.delete-title {
       color: $danger-color !important;
@@ -29,7 +53,11 @@
     .modal-delete-text {
       font-size: 0.9rem !important;
       color: $text-secondary !important;
-      line-height: 1.5 !important;
+      line-height: 1.55 !important;
+      padding: 0.75rem 1rem;
+      border-radius: $radius-sm;
+      background-color: color.adjust($danger-color, $alpha: -0.93);
+      border-left: 3px solid $danger-color;
 
       strong {
         color: $text-primary;
@@ -42,26 +70,28 @@
 
       .MuiOutlinedInput-root {
         border-radius: $radius-sm;
-        background-color: $bg-sidebar;
+        background-color: color.adjust($bg-sidebar, $alpha: -0.2);
         font-size: 0.925rem;
         transition:
-          background-color 0.2s,
-          border-color 0.2s;
+          background-color 0.2s ease,
+          box-shadow 0.2s ease;
 
         fieldset {
           border-color: $border-color;
+          transition: border-color 0.2s ease;
         }
 
         &:hover fieldset {
-          border-color: color.adjust(#e0e2e6, $lightness: -10%);
+          border-color: color.adjust($primary-color, $alpha: -0.5);
         }
 
         &.Mui-focused {
           background-color: $bg-surface;
+          box-shadow: 0 0 0 3px color.adjust($primary-color, $alpha: -0.85);
 
           fieldset {
             border-color: $primary-color;
-            border-width: 2px;
+            border-width: 1.5px;
           }
         }
       }
@@ -72,7 +102,7 @@
 
         &::placeholder {
           color: $text-secondary;
-          opacity: 0.8;
+          opacity: 0.75;
         }
       }
     }
@@ -81,7 +111,7 @@
   /* Footer Action Buttons */
   .modal-actions {
     padding: 0.75rem 1.25rem !important;
-    gap: 0.5rem;
+    gap: 0.65rem;
 
     .modal-cancel-btn {
       text-transform: none !important;
@@ -89,11 +119,14 @@
       font-size: 0.875rem !important;
       color: $text-secondary !important;
       border-radius: $radius-pill !important;
-      padding: 0.4rem 1.1rem !important;
+      padding: 0.45rem 1.15rem !important;
+      border: 1px solid transparent !important;
+      transition: all 0.2s ease !important;
 
       &:hover {
         background-color: $bg-hover !important;
         color: $text-primary !important;
+        border-color: $border-color !important;
       }
     }
 
@@ -102,25 +135,57 @@
       font-weight: 600 !important;
       font-size: 0.875rem !important;
       border-radius: $radius-pill !important;
-      padding: 0.4rem 1.25rem !important;
-      background-color: $primary-color !important;
+      padding: 0.45rem 1.35rem !important;
+      background: linear-gradient(
+        135deg,
+        $primary-color 0%,
+        color.adjust($primary-color, $lightness: -6%) 100%
+      ) !important;
       color: #ffffff !important;
-      box-shadow: none !important;
+      box-shadow: 0 4px 12px color.adjust($primary-color, $alpha: -0.65) !important;
+      transition: all 0.2s ease !important;
 
       &:hover {
-        background-color: $primary-hover !important;
+        background: linear-gradient(
+          135deg,
+          $primary-hover 0%,
+          color.adjust($primary-hover, $lightness: -6%) 100%
+        ) !important;
+        box-shadow: 0 6px 16px color.adjust($primary-color, $alpha: -0.55) !important;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px color.adjust($primary-color, $alpha: -0.65) !important;
       }
 
       &:disabled {
-        background-color: rgba(0, 0, 0, 0.12) !important;
-        color: rgba(0, 0, 0, 0.26) !important;
+        background: rgba(0, 0, 0, 0.08) !important;
+        color: rgba(0, 0, 0, 0.3) !important;
+        box-shadow: none !important;
+        transform: none !important;
       }
 
       &.delete-btn {
-        background-color: $danger-color !important;
+        background: linear-gradient(
+          135deg,
+          $danger-color 0%,
+          color.adjust($danger-color, $lightness: -8%) 100%
+        ) !important;
+        box-shadow: 0 4px 12px color.adjust($danger-color, $alpha: -0.65) !important;
 
         &:hover {
-          background-color: color.adjust(#d93025, $lightness: -8%) !important;
+          background: linear-gradient(
+            135deg,
+            color.adjust($danger-color, $lightness: -5%) 0%,
+            color.adjust($danger-color, $lightness: -12%) 100%
+          ) !important;
+          box-shadow: 0 6px 16px color.adjust($danger-color, $alpha: -0.55) !important;
+        }
+
+        &:active {
+          box-shadow: 0 2px 6px color.adjust($danger-color, $alpha: -0.65) !important;
         }
       }
     }
