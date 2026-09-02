@@ -8,6 +8,7 @@ import validateResetOtp from "../controllers/Auth Controllers/validateResetOtp.j
 import resetPassword from "../controllers/Auth Controllers/resetPassword.js";
 import resendVerificationOtp from "../controllers/Auth Controllers/resendVerificationOtp.js";
 import { authenticateToken } from "../middlewares/authenticateToken.js";
+import userDetails from "../controllers/Auth Controllers/userDetails.js";
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.post("/resend-verification-otp", resendVerificationOtp);
 router.get("/validate-token", authenticateToken, (request, response) => {
   return response.status(200).json({ success: true });
 });
+router.get("/user-details", authenticateToken, userDetails);
 
 export default router;
