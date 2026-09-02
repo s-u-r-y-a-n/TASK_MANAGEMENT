@@ -14,6 +14,7 @@ const editTask = async (req, res) => {
     const priority = normalizeText(req.body?.priority);
     const status = normalizeText(req.body?.status);
     const starredInput = req.body?.starred;
+    const removeAttachmentInput = req.body?.removeAttachment;
     const taskFile = req.file || null;
 
     if (!userId) {
@@ -166,6 +167,9 @@ const editTask = async (req, res) => {
     }
     if (starred !== null) {
       updateData.starred = starred;
+    }
+    if (removeAttachmentInput === "true") {
+      updateData.attachment = null;
     }
     if (taskFile) {
       updateData.attachment = {

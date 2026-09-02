@@ -8,6 +8,8 @@ import upload from "../middlewares/upload.js";
 import createTask from "../controllers/Task Controllers/createTask.js";
 import getTasksByListId from "../controllers/Task Controllers/getTasks.js";
 import searchAndFilterTasks from "../controllers/Task Controllers/searchAndFilterTasks.js";
+import deleteTask from "../controllers/Task Controllers/deleteTask.js";
+import editTask from "../controllers/Task Controllers/editTask.js";
 
 const router = Router();
 
@@ -23,5 +25,12 @@ router.post(
 );
 router.get("/fetch-tasks/:listId", authenticateToken, getTasksByListId);
 router.get("/search-and-filter-tasks", authenticateToken, searchAndFilterTasks);
+router.delete("/delete-task/:taskId", authenticateToken, deleteTask);
+router.put(
+  "/edit-task/:taskId",
+  authenticateToken,
+  upload.single("taskFile"),
+  editTask,
+);
 
 export default router;
