@@ -9,10 +9,16 @@ const userDetails = async (req, res) => {
         message: "User not found.",
       });
     }
+    const userData = {
+      username: user.username,
+      email: user.email,
+      isAccountVerified: user.isAccountVerified,
+      createdAt: user.createdAt,
+    };
     return res.status(200).json({
       success: true,
       message: "User details fetched successfully.",
-      data: user,
+      data: userData,
     });
   } catch (error) {
     return res.status(500).json({

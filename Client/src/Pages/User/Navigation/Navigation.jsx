@@ -7,6 +7,7 @@ import PasswordReset from "../../Reset Password/PasswordReset.jsx";
 import Home from "../Home/Home.jsx";
 import { ProtectedRoutes } from "../../../utils/ProtectedRoutes.jsx";
 import { TaskList } from "../Task/TaskList.jsx";
+import { ProfileDetails } from "../../Profile/ProfileDetails.jsx";
 
 const Navigation = () => {
   return (
@@ -20,6 +21,7 @@ const Navigation = () => {
           <Route index element={<TaskList />} />
         </Route>
       </Route>
+      <Route path="/profile-details" element={<ProfileDetails />} />
     </Routes>
   );
 };

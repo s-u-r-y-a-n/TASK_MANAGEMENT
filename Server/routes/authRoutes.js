@@ -9,6 +9,7 @@ import resetPassword from "../controllers/Auth Controllers/resetPassword.js";
 import resendVerificationOtp from "../controllers/Auth Controllers/resendVerificationOtp.js";
 import { authenticateToken } from "../middlewares/authenticateToken.js";
 import userDetails from "../controllers/Auth Controllers/userDetails.js";
+import changePassword from "../controllers/Auth Controllers/changePassword.js";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.get("/validate-token", authenticateToken, (request, response) => {
   return response.status(200).json({ success: true });
 });
 router.get("/user-details", authenticateToken, userDetails);
+router.post("/change-password", authenticateToken, changePassword);
 
 export default router;

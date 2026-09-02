@@ -1,0 +1,60 @@
+.profile-container {
+  position: fixed;
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+
+  .profile-avatar-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+
+    .profile-avatar-initial {
+      color: #ffffff;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1;
+      user-select: none;
+    }
+  }
+}
+
+.profile-header-info {
+  padding: 8px 16px;
+
+  .user-name {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .user-email {
+    margin: 2px 0 0 0;
+    font-size: 0.78rem;
+    color: #6b7280;
+    word-break: break-all;
+  }
+}

@@ -9,6 +9,7 @@ import useToast from "../../../hooks/useToast";
 import Modal from "../../../Components/Modal/Modal";
 import { setTasksLists } from "../../../store/taskSlice";
 import { Task } from "../Task/Task";
+import { Profile } from "../../Profile/Profile";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -186,75 +187,78 @@ const Home = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        minHeight: "100vh",
-        width: "100%",
-        bgcolor: "#ffffff",
-      }}
-    >
-      <IconButton
-        aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-        onClick={() => setIsSidebarOpen((previous) => !previous)}
-        sx={{
-          position: "fixed",
-          top: 12,
-          left: 12,
-          zIndex: (theme) => theme.zIndex.drawer + 2,
-          bgcolor: "background.paper",
-          boxShadow: 1,
-          border: "1px solid #e0e2e6",
-          "&:hover": {
-            bgcolor: "#f1f3f4",
-          },
-        }}
-      >
-        <MenuIcon fontSize="small" />
-      </IconButton>
-
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-        onCreateList={openCreateListModal}
-        onEditList={openEditListModal}
-        onDeleteList={openDeleteListModal}
-        setSelectedList={setSelectedList}
-        selectedListId={selectedList?._id || selectedList?.id}
-      />
-
-      <Modal
-        open={isListModalOpen}
-        setOpen={setIsListModalOpen}
-        text={listName}
-        setText={setListName}
-        handleSubmit={handleListAction}
-        isSubmitting={isCreatingList}
-        modalMode={modalMode}
-      />
-
+    <>
+      <Profile />
       <Box
-        component="main"
         sx={{
+          display: "flex",
           minHeight: "100vh",
-          boxSizing: "border-box",
-          width: isSidebarOpen ? `calc(100% - ${SIDEBAR_WIDTH}px)` : "100%",
-          marginLeft: isSidebarOpen ? `${SIDEBAR_WIDTH}px` : "0px",
-          p: {
-            xs: 2,
-            sm: 3,
-            md: 4,
-          },
-          pt: {
-            xs: 8,
-            sm: 9,
-          },
-          transition: "width 0.3s ease, margin-left 0.3s ease",
+          width: "100%",
+          bgcolor: "#ffffff",
         }}
       >
-        <Task selectedList={selectedList} />
+        <IconButton
+          aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+          onClick={() => setIsSidebarOpen((previous) => !previous)}
+          sx={{
+            position: "fixed",
+            top: 12,
+            left: 12,
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            bgcolor: "background.paper",
+            boxShadow: 1,
+            border: "1px solid #e0e2e6",
+            "&:hover": {
+              bgcolor: "#f1f3f4",
+            },
+          }}
+        >
+          <MenuIcon fontSize="small" />
+        </IconButton>
+
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          onCreateList={openCreateListModal}
+          onEditList={openEditListModal}
+          onDeleteList={openDeleteListModal}
+          setSelectedList={setSelectedList}
+          selectedListId={selectedList?._id || selectedList?.id}
+        />
+
+        <Modal
+          open={isListModalOpen}
+          setOpen={setIsListModalOpen}
+          text={listName}
+          setText={setListName}
+          handleSubmit={handleListAction}
+          isSubmitting={isCreatingList}
+          modalMode={modalMode}
+        />
+
+        <Box
+          component="main"
+          sx={{
+            minHeight: "100vh",
+            boxSizing: "border-box",
+            width: isSidebarOpen ? `calc(100% - ${SIDEBAR_WIDTH}px)` : "100%",
+            marginLeft: isSidebarOpen ? `${SIDEBAR_WIDTH}px` : "0px",
+            p: {
+              xs: 2,
+              sm: 3,
+              md: 4,
+            },
+            pt: {
+              xs: 8,
+              sm: 9,
+            },
+            transition: "width 0.3s ease, margin-left 0.3s ease",
+          }}
+        >
+          <Task selectedList={selectedList} />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -6,7 +6,7 @@ const initialState = {
   isOtpSubmitted: false,
   isEmailSent: false,
   signupDetails: {},
-  
+  userData: {},
 };
 
 const appSlice = createSlice({
@@ -28,7 +28,10 @@ const appSlice = createSlice({
     setSignupDetails: (state, action) => {
       state.signupDetails = action.payload;
     },
-    
+    setUserData: (state, action) => {
+      console.log("Setting user data in Redux store:", action.payload);
+      state.userData = action.payload;
+    },
   },
 });
 
@@ -38,6 +41,7 @@ export const {
   setIsOtpSubmitted,
   setIsEmailSent,
   setSignupDetails,
+  setUserData,
 } = appSlice.actions;
 
 export default appSlice.reducer;
