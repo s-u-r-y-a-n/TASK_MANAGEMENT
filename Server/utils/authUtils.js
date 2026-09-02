@@ -10,7 +10,7 @@ export const createAuthTokens = (user) => {
   const accessToken = jwt.sign(
     { email: user.email, id: user._id },
     JWT_ACCESS_SECRET,
-    { expiresIn: "24h" },
+    { expiresIn: "1m" },
   );
   const refreshToken = jwt.sign({ id: user._id }, JWT_REFRESH_SECRET, {
     expiresIn: "24h",

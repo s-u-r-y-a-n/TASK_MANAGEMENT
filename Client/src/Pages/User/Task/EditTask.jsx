@@ -350,11 +350,7 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
         <Box>
           <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
             Attachment
-            <Typography
-              component="span"
-              variant="body2"
-              color="text.secondary"
-            >
+            <Typography component="span" variant="body2" color="text.secondary">
               {" "}
               (Optional)
             </Typography>
@@ -374,12 +370,7 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
                 mb: 1.5,
               }}
             >
-              <Stack
-                direction="row"
-                alignItems="center"
-                gap={1.5}
-                minWidth={0}
-              >
+              <Stack direction="row" alignItems="center" gap={1.5} minWidth={0}>
                 <AttachFileIcon color="primary" />
 
                 <Box minWidth={0}>
@@ -450,12 +441,7 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
                 py: 1.5,
               }}
             >
-              <Stack
-                direction="row"
-                alignItems="center"
-                gap={1.5}
-                minWidth={0}
-              >
+              <Stack direction="row" alignItems="center" gap={1.5} minWidth={0}>
                 <AttachFileIcon color="primary" />
 
                 <Box minWidth={0}>

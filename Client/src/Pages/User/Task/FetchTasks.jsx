@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, CircularProgress, Typography, Menu, MenuItem } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import axios from "axios";
 import TaskCard from "../../../Components/TaskCard.jsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -103,21 +109,24 @@ export const FetchTasks = ({ selectedList }) => {
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
     try {
-      await axios.delete(
-        `${API_BASE_URL}/delete-task/${selectedTask._id}`,
-        {
-          data: {
-            listId: selectedTask.listId,
-          },
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+      await axios.delete(`${API_BASE_URL}/delete-task/${selectedTask._id}`, {
+        data: {
+          listId: selectedTask.listId,
         },
-      );
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-      const updatedTasks = tasks.filter((task) => task._id !== selectedTask._id);
+      const updatedTasks = tasks.filter(
+        (task) => task._id !== selectedTask._id,
+      );
       dispatch(setTasks(updatedTasks));
-      showToast("success", "Task Deleted", "Your task has been deleted successfully.");
+      showToast(
+        "success",
+        "Task Deleted",
+        "Your task has been deleted successfully.",
+      );
       setDeleteDialogOpen(false);
       setSelectedTask(null);
     } catch (error) {
@@ -243,11 +252,12 @@ export const FetchTasks = ({ selectedList }) => {
         anchorEl={menuAnchorEl}
         open={Boolean(menuAnchorEl)}
         onClose={handleMenuClose}
-        PaperProps={{
-          sx: {
-            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
-          },
-        }}
+        className="task-list-action-menu"
+        // PaperProps={{
+        //   sx: {
+        //     boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+        //   },
+        // }}
       >
         <MenuItem onClick={handleEditClick}>
           <EditOutlined fontSize="small" sx={{ mr: 1 }} />

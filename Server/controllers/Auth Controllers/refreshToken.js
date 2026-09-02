@@ -90,7 +90,8 @@ const refreshToken = async (request, response) => {
 
     return response.status(500).json({
       success: false,
-      message: "We could not refresh your session right now. Please log in again.",
+      message:
+        "We could not refresh your session right now. Please log in again.",
     });
   }
 };
