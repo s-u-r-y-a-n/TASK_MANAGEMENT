@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import TaskListModel from "../../models/taskListModel.js";
+import TaskModel from "../../models/taskModel.js";
 import { normalizeText } from "../../utils/inputFields.js";
 
 const deleteList = async (req, res) => {
@@ -39,6 +40,18 @@ const deleteList = async (req, res) => {
       _id: listId,
       userId,
     });
+
+    const tasks = await TaskModel.deleteMany({
+      listId,
+      userId,
+    });
+
+    if (tasks.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "List not found.",
+      });
+    }
 
     if (!deletedList) {
       return res.status(404).json({
