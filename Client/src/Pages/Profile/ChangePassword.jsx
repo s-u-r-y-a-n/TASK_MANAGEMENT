@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { DialogComponent } from "../../Components/Modal/DialogComponent";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 import useToast from "../../hooks/useToast";
@@ -6,46 +9,113 @@ import axios from "axios";
 import "./ChangePassword.scss";
 
 export const ChangePassword = ({ open, onClose }) => {
-  const { showSuccess, showError } = useToast();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [generalError, setGeneralError] = useState("");
+
+  const [showPassword, setShowPassword] = useState({
+    old: false,
+    new: false,
+    confirm: false,
+  });
+
+  const [formValues, setFormValues] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const [fieldErrors, setFieldErrors] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
   const accessToken = localStorage.getItem("accessToken");
   const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const passwordRegex =
+    /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).*$/;
 
   const handleClose = () => {
-    setErrorMessage("");
-    setNewPassword("");
+    setGeneralError("");
+    setFieldErrors({ oldPassword: "", newPassword: "", confirmPassword: "" });
+    setFormValues({ oldPassword: "", newPassword: "", confirmPassword: "" });
+    setShowPassword({ old: false, new: false, confirm: false });
     onClose();
   };
 
-  const handleSubmit = async (formValues) => {
-    const oldPassword = formValues.oldPassword?.trim();
-    const confirmPassword = formValues.confirmPassword?.trim();
-    setErrorMessage("");
-    if (!oldPassword) {
-      setErrorMessage("Please enter your current password.");
-      return;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    const sanitizedValue = value.replace(/\s/g, "");
+
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: sanitizedValue,
+    }));
+
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    if (!newPassword) {
-      setErrorMessage("Please enter a new password.");
-      return;
+
+    if (generalError) {
+      setGeneralError("");
     }
-    if (newPassword.length < 8) {
-      setErrorMessage("New password must be at least 8 characters long.");
-      return;
+  };
+
+  const handleClickShowPassword = (field) => {
+    setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  const validateCredentials = (values) => {
+    const errors = {
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    };
+
+    if (!values.oldPassword.trim()) {
+      errors.oldPassword = "Old Password is required";
     }
-    if (newPassword !== confirmPassword) {
-      setErrorMessage("New password and confirm password do not match.");
-      return;
+
+    if (!values.newPassword.trim()) {
+      errors.newPassword = "New Password is required";
+    } else if (!passwordRegex.test(values.newPassword)) {
+      errors.newPassword =
+        "Must be 8+ characters and contain uppercase, lowercase, number & special character.";
     }
+
+    if (!values.confirmPassword.trim()) {
+      errors.confirmPassword = "Confirm Password is required";
+    } else if (values.newPassword.trim() !== values.confirmPassword.trim()) {
+      errors.confirmPassword =
+        "New password and confirm password do not match.";
+    }
+
+    setFieldErrors(errors);
+    return !Object.values(errors).some(Boolean);
+  };
+
+  const handleSubmit = async (submittedData) => {
+    // Falls back to formValues in case submittedData is serialized without custom inputs
+    const payload = {
+      oldPassword: submittedData.oldPassword || formValues.oldPassword,
+      newPassword: submittedData.newPassword || formValues.newPassword,
+      confirmPassword:
+        submittedData.confirmPassword || formValues.confirmPassword,
+    };
+
+    const isValid = validateCredentials(payload);
+    if (!isValid) return;
+
     setLoading(true);
+    setGeneralError("");
+
     try {
       const response = await axios.post(
         `${API_BASE_URL}/change-password`,
         {
-          oldPassword,
-          newPassword,
+          oldPassword: payload.oldPassword,
+          newPassword: payload.newPassword,
         },
         {
           headers: {
@@ -53,16 +123,20 @@ export const ChangePassword = ({ open, onClose }) => {
           },
         },
       );
-      if (response.data?.success) {
-        showSuccess(response.data.message || "Password changed successfully.");
-        handleClose();
-      }
+
+      handleClose();
+      showToast(
+        "success",
+        "Password Changed",
+        response.data?.message ||
+          "Your password has been changed successfully.",
+      );
     } catch (err) {
-      const message =
+      const serverMessage =
         err.response?.data?.message ||
         "Failed to change password. Please check your current password.";
-      setErrorMessage(message);
-      showError(message);
+      setGeneralError(serverMessage);
+      showToast("error", "Password Change Failed", serverMessage);
     } finally {
       setLoading(false);
     }
@@ -80,53 +154,121 @@ export const ChangePassword = ({ open, onClose }) => {
       loading={loading}
       maxWidth="xs"
     >
-      <div className="change-password-dialog-content">
-        {errorMessage && (
-          <div className="password-error-alert">{errorMessage}</div>
+      <Box className="change-password-dialog-content">
+        {generalError && (
+          <div className="password-error-alert">{generalError}</div>
         )}
 
         <div className="dialog-form-group">
-          <label htmlFor="oldPassword">Current Password</label>
-          <input
+          <TextField
             id="oldPassword"
             name="oldPassword"
-            type="password"
+            label="Current Password"
+            type={showPassword.old ? "text" : "password"}
             autoComplete="current-password"
             placeholder="Enter current password"
             disabled={loading}
+            value={formValues.oldPassword}
+            onChange={handleChange}
+            fullWidth
+            error={Boolean(fieldErrors.oldPassword)}
+            helperText={fieldErrors.oldPassword}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => handleClickShowPassword("old")}
+                      edge="end"
+                      aria-label={
+                        showPassword.old ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword.old ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
         </div>
 
         <div className="dialog-form-group">
-          <label htmlFor="newPassword">New Password</label>
-          <input
+          <TextField
             id="newPassword"
             name="newPassword"
-            type="password"
+            label="New Password"
+            type={showPassword.new ? "text" : "password"}
             autoComplete="new-password"
             placeholder="Enter new password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            value={formValues.newPassword}
+            onChange={handleChange}
             disabled={loading}
+            fullWidth
+            error={Boolean(fieldErrors.newPassword)}
+            helperText={fieldErrors.newPassword}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => handleClickShowPassword("new")}
+                      edge="end"
+                      aria-label={
+                        showPassword.new ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword.new ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
         </div>
 
-        {newPassword.length > 0 && (
-          <PasswordValidation password={newPassword} />
+        {formValues.newPassword.length > 0 && (
+          <PasswordValidation password={formValues.newPassword} />
         )}
 
         <div className="dialog-form-group">
-          <label htmlFor="confirmPassword">Confirm New Password</label>
-          <input
+          <TextField
             id="confirmPassword"
             name="confirmPassword"
-            type="password"
+            label="Confirm New Password"
+            type={showPassword.confirm ? "text" : "password"}
             autoComplete="new-password"
             placeholder="Re-enter new password"
+            value={formValues.confirmPassword}
+            onChange={handleChange}
             disabled={loading}
+            fullWidth
+            error={Boolean(fieldErrors.confirmPassword)}
+            helperText={fieldErrors.confirmPassword}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => handleClickShowPassword("confirm")}
+                      edge="end"
+                      aria-label={
+                        showPassword.confirm ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword.confirm ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
         </div>
-      </div>
+      </Box>
     </DialogComponent>
   );
 };

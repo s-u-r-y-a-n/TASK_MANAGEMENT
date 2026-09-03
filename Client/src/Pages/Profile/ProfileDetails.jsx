@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
@@ -172,13 +173,14 @@ export const ProfileDetails = () => {
                 Change your password to keep your account safe
               </span>
             </div>
-            <button
+            <Button
+              variant="contained"
               type="button"
               className="toggle-password-btn"
               onClick={() => setIsPasswordModalOpen(true)}
             >
               Change Password
-            </button>
+            </Button>
           </div>
         </div>
 

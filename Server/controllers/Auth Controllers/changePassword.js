@@ -46,7 +46,7 @@ const changePassword = async function (request, response) {
       });
     }
 
-    const isAccountVerified = user.isAccountVerified;
+    const isAccountVerified = existingUser.isAccountVerified;
 
     if (!isAccountVerified) {
       return response.status(403).json({
@@ -57,9 +57,9 @@ const changePassword = async function (request, response) {
 
     const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
-    user.password = newPasswordHash;
+    existingUser.password = newPasswordHash;
 
-    await user.save();
+    await existingUser.save();
 
     return response.status(200).json({
       success: true,
