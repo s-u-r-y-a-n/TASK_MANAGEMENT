@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TaskList } from "../Task/TaskList";
@@ -39,6 +40,11 @@ const Sidebar = ({
 
   const openStarredTasks = () => {
     navigate("/starred");
+    if (isMobile) onClose();
+  };
+
+  const openDashboard = () => {
+    navigate("/dashboard");
     if (isMobile) onClose();
   };
 
@@ -105,6 +111,19 @@ const Sidebar = ({
             <ListItemText primary="Starred" />
           </ListItemButton>
         </List>
+        <List className="sidebar-primary-navigation">
+          <ListItemButton
+            selected={location.pathname === "/dashboard"}
+            onClick={openDashboard}
+            className="sidebar-dashboard-button"
+          >
+            <ListItemIcon>
+              <SpaceDashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
+        </List>
+
         <List
           subheader={
             <ListSubheader component="div" className="sidebar-list-subheader">

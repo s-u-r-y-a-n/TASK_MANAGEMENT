@@ -12,6 +12,8 @@ import { setTasksLists } from "../../../store/taskSlice";
 import { Task } from "../Task/Task";
 import { Profile } from "../../Profile/Profile";
 import Starred from "../../Starred/Starred";
+import { Dashboard } from "@mui/icons-material";
+import { Dashboard as DashboardComponent } from "../../Dashboard/Dashboard.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -29,6 +31,7 @@ const Home = () => {
   const { showToast } = useToast();
   const location = useLocation();
   const isStarredPage = location.pathname === "/starred";
+  const isDashboardPage = location.pathname === "/dashboard";
 
   const accessToken = localStorage.getItem("accessToken");
 
@@ -259,7 +262,13 @@ const Home = () => {
             transition: "width 0.3s ease, margin-left 0.3s ease",
           }}
         >
-          {isStarredPage ? <Starred /> : <Task selectedList={selectedList} />}
+          {isStarredPage ? (
+            <Starred />
+          ) : isDashboardPage ? (
+            <DashboardComponent />
+          ) : (
+            <Task selectedList={selectedList} />
+          )}
         </Box>
       </Box>
     </>

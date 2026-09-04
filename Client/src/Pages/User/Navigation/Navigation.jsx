@@ -18,6 +18,7 @@ const Navigation = () => {
       <Route element={<ProtectedRoutes />}>
         <Route path="/home" element={<Home />} />
         <Route path="/starred" element={<Home />} />
+        <Route path="/dashboard" element={<Home />} />
       </Route>
       <Route path="/profile-details" element={<ProfileDetails />} />
     </Routes>
