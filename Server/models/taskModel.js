@@ -72,6 +72,15 @@ const taskSchema = new mongoose.Schema(
   },
 );
 
+// Optimize retrieval of starred tasks for the menu
+taskSchema.index({ userId: 1, starred: 1, createdAt: -1 });
+
+// Optimize retrieval of tasks by list & status
+taskSchema.index({ userId: 1, listId: 1, status: 1 });
+
+// Optimize dashboard overdue checks
+taskSchema.index({ userId: 1, dueDate: 1, status: 1 });
+
 const TaskModel = mongoose.models.task || mongoose.model("task", taskSchema);
 
 export default TaskModel;

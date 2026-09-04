@@ -11,6 +11,7 @@ import searchAndFilterTasks from "../controllers/Task Controllers/searchAndFilte
 import deleteTask from "../controllers/Task Controllers/deleteTask.js";
 import editTask from "../controllers/Task Controllers/editTask.js";
 import dashboardMetrics from "../controllers/Task Controllers/dashboardMetrics.js";
+import starredTasks from "../controllers/Task Controllers/starredTasks.js";
 
 const router = Router();
 
@@ -34,5 +35,6 @@ router.put(
   editTask,
 );
 router.get("/dashboard-metrics", authenticateToken, dashboardMetrics);
+router.get("/starred-tasks", authenticateToken, starredTasks);
 
 export default router;

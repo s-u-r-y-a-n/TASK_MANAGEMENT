@@ -20,5 +20,7 @@ export const Dashboard = () => {
     fetchDashboardMetrics();
   }, []);
 
-  return <div>Dashboard</div>;
+  return <div>
+    
+  </div>;
 };
