@@ -1,0 +1,35 @@
+@use "../../styles/variables" as *;
+
+.starred-page {
+  max-width: 960px;
+  margin: 0 auto;
+
+  &__heading {
+    margin-bottom: 2rem;
+  }
+
+  &__tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  &__state,
+  &__empty {
+    display: flex;
+    min-height: 220px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__empty {
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 2rem;
+    text-align: center;
+    color: $text-secondary;
+    border: 1px dashed $border-color;
+    border-radius: $radius-md;
+    background: $bg-subtle;
+  }
+}

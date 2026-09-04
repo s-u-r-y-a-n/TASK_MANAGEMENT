@@ -26,6 +26,27 @@
   line-height: normal !important;
 }
 
+.sidebar-primary-navigation {
+  padding: 0 0.75rem !important;
+}
+
+.sidebar-starred-button {
+  min-height: 44px !important;
+  border-radius: $radius-sm !important;
+  color: $text-primary !important;
+
+  .MuiListItemIcon-root {
+    min-width: 38px !important;
+    color: inherit !important;
+  }
+
+  &.Mui-selected,
+  &.Mui-selected:hover {
+    color: $primary-color !important;
+    background-color: $primary-light !important;
+  }
+}
+
 .sidebar-divider {
   border-color: $border-color !important;
 }

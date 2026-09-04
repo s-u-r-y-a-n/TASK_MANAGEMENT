@@ -1,6 +1,7 @@
 import { Box, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
@@ -10,6 +11,7 @@ import Modal from "../../../Components/Modal/Modal";
 import { setTasksLists } from "../../../store/taskSlice";
 import { Task } from "../Task/Task";
 import { Profile } from "../../Profile/Profile";
+import Starred from "../../Starred/Starred";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -25,6 +27,8 @@ const Home = () => {
   const { taskLists } = useSelector((state) => state.task);
   const dispatch = useDispatch();
   const { showToast } = useToast();
+  const location = useLocation();
+  const isStarredPage = location.pathname === "/starred";
 
   const accessToken = localStorage.getItem("accessToken");
 
@@ -255,7 +259,7 @@ const Home = () => {
             transition: "width 0.3s ease, margin-left 0.3s ease",
           }}
         >
-          <Task selectedList={selectedList} />
+          {isStarredPage ? <Starred /> : <Task selectedList={selectedList} />}
         </Box>
       </Box>
     </>

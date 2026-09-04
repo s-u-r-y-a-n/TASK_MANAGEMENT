@@ -12,6 +12,7 @@ import deleteTask from "../controllers/Task Controllers/deleteTask.js";
 import editTask from "../controllers/Task Controllers/editTask.js";
 import dashboardMetrics from "../controllers/Task Controllers/dashboardMetrics.js";
 import starredTasks from "../controllers/Task Controllers/starredTasks.js";
+import toggleStarred from "../controllers/Task Controllers/toggleStarred.js";
 
 const router = Router();
 
@@ -36,5 +37,6 @@ router.put(
 );
 router.get("/dashboard-metrics", authenticateToken, dashboardMetrics);
 router.get("/starred-tasks", authenticateToken, starredTasks);
+router.patch("/toggle-starred/:taskId", authenticateToken, toggleStarred);
 
 export default router;

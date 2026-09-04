@@ -4,6 +4,7 @@ import {
   CheckCircleOutlined,
   DescriptionOutlined,
   DownloadOutlined,
+  FolderOutlined,
   MoreVert,
   OpenInNew,
   Star,
@@ -14,6 +15,7 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
   const hasAttachment = task?.attachment?.fileName && task?.attachment?.fileUrl;
   const isPdf = task?.attachment?.mimeType === "application/pdf";
   const isImage = task?.attachment?.mimeType?.startsWith("image/");
+  const listName = task?.listId?.listName || task?.listName;
 
   const handleOpenAttachment = () => {
     if (!hasAttachment) return;
@@ -158,6 +160,16 @@ const TaskCard = ({ task, onToggle, onMenu, onStar }) => {
               gap: 0.75,
             }}
           >
+            {listName && (
+              <Chip
+                size="small"
+                icon={<FolderOutlined />}
+                label={listName}
+                variant="outlined"
+                sx={{ backgroundColor: "background.default" }}
+              />
+            )}
+
             {task.priority && <PriorityChip priority={task.priority} />}
 
             {task.status && <StatusChip status={task.status} />}

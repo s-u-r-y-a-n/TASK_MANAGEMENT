@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import TaskCard from "../../../Components/TaskCard.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { setTasks } from "../../../store/taskSlice.js";
+import { setTaskStarred, setTasks } from "../../../store/taskSlice.js";
 import { EditTask } from "./EditTask.jsx";
 import useToast from "../../../hooks/useToast.js";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent.jsx";
@@ -26,7 +26,7 @@ export const FetchTasks = ({ selectedList }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const dispatch = useDispatch();
-  const { selectedListIds } = useSelector((state) => state.task);
+  const { selectedListIds, taskLists } = useSelector((state) => state.task);
   const { search, priority, status, dueDate } = useSelector(
     (state) => state.task.filters,
   );
@@ -156,7 +156,7 @@ export const FetchTasks = ({ selectedList }) => {
         formData.append("taskDueDate", task.dueDate);
       }
 
-      const response = await axios.put(
+      const response = await axios.patch(
         `${API_BASE_URL}/edit-task/${task._id}`,
         formData,
         {
@@ -183,34 +183,48 @@ export const FetchTasks = ({ selectedList }) => {
   };
 
   const handleStarTask = async (task) => {
-    try {
-      const formData = new FormData();
-      formData.append("listId", task.listId);
-      formData.append("taskName", task.title);
-      formData.append("taskDescription", task.description || "");
-      formData.append("priority", task.priority);
-      formData.append("status", task.status);
-      formData.append("starred", String(!task.starred));
-      if (task.dueDate) {
-        formData.append("taskDueDate", task.dueDate);
-      }
+    const nextStarredStatus = !task.starred;
+    const list = taskLists.find(
+      (taskList) => (taskList._id || taskList.id) === task.listId,
+    );
+    const taskWithListName = list
+      ? { ...task, listId: { _id: task.listId, listName: list.listName } }
+      : task;
 
+    dispatch(
+      setTaskStarred({
+        taskId: task._id,
+        starred: nextStarredStatus,
+        task: taskWithListName,
+      }),
+    );
+
+    try {
       const response = await axios.put(
-        `${API_BASE_URL}/edit-task/${task._id}`,
-        formData,
+        `${API_BASE_URL}/toggle-starred/${task._id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
           },
         },
       );
 
-      const updatedTasks = tasks.map((t) =>
-        t._id === task._id ? response.data.data : t,
+      dispatch(
+        setTaskStarred({
+          taskId: task._id,
+          starred: response.data.data.starred,
+          task: response.data.data,
+        }),
       );
-      dispatch(setTasks(updatedTasks));
     } catch (error) {
+      dispatch(
+        setTaskStarred({
+          taskId: task._id,
+          starred: task.starred,
+          task: taskWithListName,
+        }),
+      );
       console.error("Error updating task starred status:", error);
       showToast(
         "error",

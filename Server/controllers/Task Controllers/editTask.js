@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import TaskModel from "../../models/taskModel.js";
 import TaskListModel from "../../models/taskListModel.js";
 import { normalizeText } from "../../utils/inputFields.js";
+import { FILE_UPLOAD_RULES } from "../../config/fileValidation.js";
 
 const editTask = async (req, res) => {
   try {
@@ -117,6 +118,25 @@ const editTask = async (req, res) => {
           message: "Due date is invalid.",
         });
       }
+    }
+
+    if (taskFile && taskFile.size > FILE_UPLOAD_RULES.maxSize.bytes) {
+      return res.status(400).json({
+        success: false,
+        message: FILE_UPLOAD_RULES.maxSize.message,
+      });
+    }
+
+    if (
+      taskFile &&
+      !FILE_UPLOAD_RULES.allowedExtensions.extensions.includes(
+        taskFile.name.split(".").pop(),
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: FILE_UPLOAD_RULES.allowedExtensions.message,
+      });
     }
 
     const task = await TaskModel.findById(taskId);

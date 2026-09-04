@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -12,19 +12,17 @@ import {
   Typography,
   IconButton,
   Stack,
-  Chip,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DeleteIcon from "@mui/icons-material/Delete";
-import StarIcon from "@mui/icons-material/Star";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { styled } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent";
 import useToast from "../../../hooks/useToast";
-import { setTasks } from "../../../store/taskSlice.js";
+import { setTaskStarred, setTasks } from "../../../store/taskSlice.js";
+import { FILE_UPLOAD_RULES } from "../../../Config/fileValidation.js";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -135,6 +133,17 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
     if (taskDetails.description.length > 5000) {
       newErrors.description = "Description cannot exceed 5000 characters";
     }
+    if (taskFile && taskFile.size > FILE_UPLOAD_RULES.maxSize.bytes) {
+      newErrors.taskFile = FILE_UPLOAD_RULES.maxSize.message;
+    }
+    if (
+      taskFile &&
+      !FILE_UPLOAD_RULES.allowedExtensions.extensions.includes(
+        taskFile.name.split(".").pop(),
+      )
+    ) {
+      newErrors.taskFile = FILE_UPLOAD_RULES.allowedExtensions.message;
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -181,6 +190,28 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
         t._id === task._id ? response.data.data : t,
       );
       dispatch(setTasks(updatedTasks));
+
+      const selectedList = taskLists.find(
+        (list) =>
+          (list._id || list.id) ===
+          (response.data.data.listId?._id || response.data.data.listId),
+      );
+      const taskWithListName = selectedList
+        ? {
+            ...response.data.data,
+            listId: {
+              _id: response.data.data.listId?._id || response.data.data.listId,
+              listName: selectedList.listName,
+            },
+          }
+        : response.data.data;
+      dispatch(
+        setTaskStarred({
+          taskId: task._id,
+          starred: response.data.data.starred,
+          task: taskWithListName,
+        }),
+      );
       showToast(
         "success",
         "Task Updated",
@@ -454,7 +485,11 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
                   </Typography>
                 </Box>
               </Stack>
-
+              {errors.taskFile && (
+                <Typography variant="caption" color="error">
+                  {errors.taskFile}
+                </Typography>
+              )}
               <IconButton size="small" onClick={removeFile} color="error">
                 <DeleteIcon />
               </IconButton>

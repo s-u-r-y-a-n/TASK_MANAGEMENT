@@ -4,13 +4,18 @@ import {
   Divider,
   Drawer,
   List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   ListSubheader,
   Toolbar,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TaskList } from "../Task/TaskList";
 import "./styles/Sidebar.scss";
 import { CreateTask } from "../Task/CreateTask";
@@ -29,6 +34,19 @@ const Sidebar = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { taskLists } = useSelector((state) => state.task);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const openStarredTasks = () => {
+    navigate("/starred");
+    if (isMobile) onClose();
+  };
+
+  const selectTaskList = (list) => {
+    setSelectedList(list);
+    if (location.pathname === "/starred") navigate("/home");
+    if (isMobile) onClose();
+  };
 
   return (
     <Drawer
@@ -75,6 +93,18 @@ const Sidebar = ({
         >
           <CreateTask />
         </Box>
+        <List className="sidebar-primary-navigation">
+          <ListItemButton
+            selected={location.pathname === "/starred"}
+            onClick={openStarredTasks}
+            className="sidebar-starred-button"
+          >
+            <ListItemIcon>
+              <StarBorderOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Starred" />
+          </ListItemButton>
+        </List>
         <List
           subheader={
             <ListSubheader component="div" className="sidebar-list-subheader">
@@ -87,7 +117,7 @@ const Sidebar = ({
             isSidebarOpen={isOpen}
             onEditList={onEditList}
             onDeleteList={onDeleteList}
-            setSelectedList={setSelectedList}
+            setSelectedList={selectTaskList}
             selectedListId={selectedListId}
           />
         </List>

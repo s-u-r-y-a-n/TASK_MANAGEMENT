@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import TaskModel from "../../models/taskModel.js";
 import TaskListModel from "../../models/taskListModel.js";
 import { normalizeText } from "../../utils/inputFields.js";
+import { FILE_UPLOAD_RULES } from "../../config/fileValidation.js";
 
 const createTask = async (req, res) => {
   try {
@@ -95,6 +96,25 @@ const createTask = async (req, res) => {
       }
     }
 
+    if (taskFile && taskFile.size > FILE_UPLOAD_RULES.maxSize.bytes) {
+      return res.status(400).json({
+        success: false,
+        message: FILE_UPLOAD_RULES.maxSize.message,
+      });
+    }
+
+    if (
+      taskFile &&
+      !FILE_UPLOAD_RULES.allowedExtensions.extensions.includes(
+        taskFile.name.split(".").pop(),
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: FILE_UPLOAD_RULES.allowedExtensions.message,
+      });
+    }
+
     const taskList = await TaskListModel.exists({ _id: listId, userId });
     if (!taskList) {
       return res.status(404).json({
@@ -122,6 +142,8 @@ const createTask = async (req, res) => {
       starred,
       attachment,
     });
+
+    await task.populate("listId", "listName");
 
     return res.status(201).json({
       success: true,

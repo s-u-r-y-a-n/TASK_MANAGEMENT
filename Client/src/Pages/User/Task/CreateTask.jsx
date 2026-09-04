@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -12,7 +12,6 @@ import {
   Typography,
   IconButton,
   Stack,
-  Chip,
 } from "@mui/material";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -24,9 +23,9 @@ import { styled } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent";
-import { showToast } from "../../../store/toastSlice";
-import { setTasks } from "../../../store/taskSlice.js";
+import { addStarredTask, setTasks } from "../../../store/taskSlice.js";
 import useToast from "../../../hooks/useToast";
+import { FILE_UPLOAD_RULES } from "../../../Config/fileValidation.js";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -52,7 +51,6 @@ export const CreateTask = () => {
   const { tasks } = useSelector((state) => {
     return state.task;
   });
-
 
   const [taskDetails, setTaskDetails] = useState({
     listId: "",
@@ -117,6 +115,19 @@ export const CreateTask = () => {
     if (taskDetails.description.length > 5000) {
       newErrors.description = "Description cannot exceed 5000 characters";
     }
+    if (taskFile && taskFile.size > FILE_UPLOAD_RULES.maxSize.bytes) {
+      newErrors.taskFile = FILE_UPLOAD_RULES.maxSize.message;
+    }
+
+    if (
+      taskFile &&
+      !FILE_UPLOAD_RULES.allowedExtensions.extensions.includes(
+        taskFile.name.split(".").pop(),
+      )
+    ) {
+      newErrors.taskFile = FILE_UPLOAD_RULES.allowedExtensions.message;
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -172,7 +183,15 @@ export const CreateTask = () => {
           },
         },
       );
-      dispatch(setTasks([...tasks, response.data.data]));
+      const createdTask = response.data.data;
+      const taskForTaskList = {
+        ...createdTask,
+        listId: createdTask.listId?._id || createdTask.listId,
+      };
+      dispatch(setTasks([...tasks, taskForTaskList]));
+      if (createdTask.starred) {
+        dispatch(addStarredTask(createdTask));
+      }
       (showToast(
         "success",
         "Task Created",
@@ -461,6 +480,11 @@ export const CreateTask = () => {
                   </Box>
                 </Stack>
 
+                {errors.taskFile && (
+                  <Typography variant="caption" color="error">
+                    {errors.taskFile}
+                  </Typography>
+                )}
                 <IconButton size="small" onClick={removeFile} color="error">
                   <DeleteIcon />
                 </IconButton>
