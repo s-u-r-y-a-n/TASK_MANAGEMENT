@@ -8,6 +8,7 @@ import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import "./Dashboard.scss";
+import { useSelector } from "react-redux";
 
 // Semantic palettes for status, priority, and lists
 const STATUS_COLORS = {
@@ -31,6 +32,7 @@ const CATEGORY_PALETTE = [
 ];
 
 export const Dashboard = () => {
+  const { tasks } = useSelector((state) => state.task);
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +51,7 @@ export const Dashboard = () => {
     };
 
     fetchDashboardMetrics();
-  }, []);
+  }, [tasks]);
 
   if (loading) {
     return (

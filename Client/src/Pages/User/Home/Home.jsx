@@ -12,7 +12,6 @@ import { setTasksLists } from "../../../store/taskSlice";
 import { Task } from "../Task/Task";
 import { Profile } from "../../Profile/Profile";
 import Starred from "../../Starred/Starred";
-import { Dashboard } from "@mui/icons-material";
 import { Dashboard as DashboardComponent } from "../../Dashboard/Dashboard.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -269,6 +268,7 @@ const Home = () => {
           ) : (
             <Task selectedList={selectedList} />
           )}
+
         </Box>
       </Box>
     </>

@@ -50,7 +50,7 @@ const Sidebar = ({
 
   const selectTaskList = (list) => {
     setSelectedList(list);
-    if (location.pathname === "/starred") navigate("/home");
+    if (location.pathname !== "/home") navigate("/home");
     if (isMobile) onClose();
   };
 
