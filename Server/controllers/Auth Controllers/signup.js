@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import UserModel from "../../models/userModel.js";
 import transporter from "./../../config/nodemailer.js";
 import { normalizeEmail, normalizeText } from "../../utils/inputFields.js";
+import { decryptPassword } from "../../utils/passwordEncryption.js";
 
 const OTP_EXPIRY_TIME = 5;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -9,7 +10,9 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const signup = async function (request, response) {
   const username = normalizeText(request.body.username);
   const email = normalizeEmail(request.body.email);
-  const password = normalizeText(request.body.password);
+  const password = normalizeText(
+    decryptPassword(normalizeText(request.body.password)),
+  );
 
   if (!username) {
     return response.status(400).json({

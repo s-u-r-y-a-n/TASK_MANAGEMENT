@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 import { useSelector } from "react-redux";
 import useToast from "../../hooks/useToast";
+import { encryptPassword } from "../../utils/passwordEncryption.js";
 import { API_BASE_URL } from "../../utils/apiConfig.js";
 
 const NewPassword = () => {
@@ -36,7 +37,7 @@ const NewPassword = () => {
     try {
       const response = await axios.post(`${API_BASE_URL}/reset-password`, {
         email,
-        newPassword,
+        newPassword: encryptPassword(newPassword),
         resetOtp: otp,
       });
       console.log(response);

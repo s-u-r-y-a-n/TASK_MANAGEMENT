@@ -1,11 +1,16 @@
 import bcrypt from "bcryptjs";
 import UserModel from "../../models/userModel.js";
 import { normalizeText } from "../../utils/inputFields.js";
+import { decryptPassword } from "../../utils/passwordEncryption.js";
 
 const changePassword = async function (request, response) {
   const user = request.user;
-  const oldPassword = normalizeText(request.body.oldPassword);
-  const newPassword = normalizeText(request.body.newPassword);
+  const oldPassword = normalizeText(
+    decryptPassword(normalizeText(request.body.oldPassword)),
+  );
+  const newPassword = normalizeText(
+    decryptPassword(normalizeText(request.body.newPassword)),
+  );
 
   if (!oldPassword) {
     return response.status(400).json({

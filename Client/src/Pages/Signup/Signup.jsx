@@ -12,6 +12,7 @@ import useToast from "../../hooks/useToast";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 import { useDispatch, useSelector } from "react-redux";
 import { setEmail, setSignupDetails } from "../../store/appSlice";
+import { encryptPassword } from "../../utils/passwordEncryption.js";
 import { API_BASE_URL } from "../../utils/apiConfig.js";
 
 const Signup = () => {
@@ -106,7 +107,10 @@ const Signup = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/signup`, signupForm);
+      const response = await axios.post(`${API_BASE_URL}/signup`, {
+        ...signupForm,
+        password: encryptPassword(signupForm.password),
+      });
       dispatch(setEmail(signupForm.email));
       dispatch(setSignupDetails(signupForm));
       console.log("SIGNUPFORM", signupForm);

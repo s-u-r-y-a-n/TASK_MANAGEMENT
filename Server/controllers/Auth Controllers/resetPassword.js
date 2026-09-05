@@ -1,12 +1,15 @@
 import bcrypt from "bcryptjs";
 import UserModel from "../../models/userModel.js";
 import { normalizeEmail, normalizeText } from "../../utils/inputFields.js";
+import { decryptPassword } from "../../utils/passwordEncryption.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const resetPassword = async (request, response) => {
   const email = normalizeEmail(request.body.email);
-  const newPassword = normalizeText(request.body.newPassword);
+  const newPassword = normalizeText(
+    decryptPassword(normalizeText(request.body.newPassword)),
+  );
   const resetOtp = normalizeText(request.body.resetOtp);
 
   if (!resetOtp) {

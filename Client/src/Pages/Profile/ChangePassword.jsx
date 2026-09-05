@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -6,6 +6,7 @@ import { DialogComponent } from "../../Components/Modal/DialogComponent";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 import useToast from "../../hooks/useToast";
 import axiosInstance from "../../utils/axiosConfig.js";
+import { encryptPassword } from "../../utils/passwordEncryption.js";
 import "./ChangePassword.scss";
 
 export const ChangePassword = ({ open, onClose }) => {
@@ -110,8 +111,8 @@ export const ChangePassword = ({ open, onClose }) => {
 
     try {
       const response = await axiosInstance.post("/change-password", {
-        oldPassword: payload.oldPassword,
-        newPassword: payload.newPassword,
+        oldPassword: encryptPassword(payload.oldPassword),
+        newPassword: encryptPassword(payload.newPassword),
       });
 
       handleClose();

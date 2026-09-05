@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import "./styles/Login.scss";
 import { Link } from "react-router-dom";
 import useToast from "../../hooks/useToast";
+import { encryptPassword } from "../../utils/passwordEncryption.js";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { API_BASE_URL } from "../../utils/apiConfig.js";
@@ -95,7 +96,10 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, loginForm);
+      const response = await axios.post(`${API_BASE_URL}/login`, {
+        ...loginForm,
+        password: encryptPassword(loginForm.password),
+      });
 
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
