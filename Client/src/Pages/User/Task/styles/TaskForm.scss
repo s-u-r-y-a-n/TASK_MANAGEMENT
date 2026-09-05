@@ -1,13 +1,15 @@
 
+@use "../../../../styles/variables" as *;
+
 .task-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: $space-5;
 
   &__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: $space-4;
 
     &--center {
       align-items: center;
@@ -27,20 +29,20 @@
   }
 
   &__attachment-title {
-    margin-bottom: 8px !important;
-    font-weight: 600 !important;
+    margin-bottom: $space-2 !important;
+    font-weight: $font-weight-semibold !important;
   }
 
   &__attachment-optional {
-    color: #6b7280;
-    font-weight: 400;
+    color: $text-secondary;
+    font-weight: $font-weight-regular;
   }
 
   &__upload {
     width: 100%;
     min-height: 100px !important;
-    border: 1.5px dashed #bdbdbd !important;
-    border-radius: 8px !important;
+    border: 1.5px dashed $border-color !important;
+    border-radius: $radius-sm !important;
     text-transform: none !important;
 
     display: flex !important;
@@ -48,22 +50,22 @@
     align-items: center;
     justify-content: center;
 
-    gap: 4px;
-    padding: 16px !important;
+    gap: $space-1;
+    padding: $space-4 !important;
 
     transition:
       border-color 0.2s ease,
       background-color 0.2s ease;
 
     &:hover {
-      border-color: #1976d2 !important;
-      background-color: rgba(25, 118, 210, 0.03);
+      border-color: $primary-color !important;
+      background-color: $bg-hover;
     }
   }
 
   &__upload-icon {
     font-size: 30px !important;
-    color: #1976d2;
+    color: $primary-color;
   }
 
   &__upload-title {
@@ -71,7 +73,7 @@
   }
 
   &__upload-description {
-    color: #6b7280;
+    color: $text-secondary;
   }
 
   &__file {
@@ -82,18 +84,18 @@
     align-items: center;
     justify-content: space-between;
 
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    border: 1px solid $border-light;
+    border-radius: $radius-sm;
 
-    padding: 12px 16px;
+    padding: $space-3 $space-4;
 
-    background-color: #fff;
+    background-color: $bg-surface;
   }
 
   &__file-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: $space-3;
 
     min-width: 0;
     overflow: hidden;
@@ -101,7 +103,7 @@
 
   &__file-icon {
     flex-shrink: 0;
-    color: #1976d2;
+    color: $primary-color;
   }
 
   &__file-details {
@@ -110,14 +112,14 @@
   }
 
   &__file-name {
-    font-weight: 600 !important;
+    font-weight: $font-weight-semibold !important;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   &__file-size {
-    color: #6b7280;
+    color: $text-secondary;
   }
 
   &__remove {

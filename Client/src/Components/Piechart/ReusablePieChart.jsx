@@ -10,12 +10,12 @@ import {
 import "./ReusablePieChart.scss";
 
 const DEFAULT_COLORS = [
-  "#4f46e5", // Indigo
+  "#2563eb", // Primary blue
   "#3b82f6", // Blue
   "#10b981", // Emerald
   "#f59e0b", // Amber
   "#ef4444", // Red
-  "#8b5cf6", // Purple
+  "#0f766e", // Secondary teal
   "#06b6d4", // Cyan
 ];
 

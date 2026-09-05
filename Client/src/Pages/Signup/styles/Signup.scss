@@ -1,25 +1,28 @@
+@use "../../../styles/variables" as *;
+
 .signup-parent {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 15px;
-  padding: 24px;
-  background: linear-gradient(135deg, #f4f7fb 0%, #e8f5e9 100%);
+  gap: $space-4;
+  padding: $space-6;
+  background: $bg-app;
 
   .signup-form {
     width: 100%;
     max-width: 430px;
-    padding: 30px 25px 20px 25px;
+    padding: $space-8 $space-6 $space-5;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    gap: $space-5;
 
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    background: $bg-surface;
+    border: 1px solid $border-light;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
 
     .MuiTextField-root {
       width: 100% !important;
@@ -28,33 +31,33 @@
 
     .MuiButton-root {
       width: 100%;
-      height: 48px;
-      margin-top: 8px;
-      font-size: 15px;
-      font-weight: 600;
+      height: $button-height;
+      margin-top: $space-2;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-semibold;
       text-transform: none;
       transition: all 0.25s ease;
 
       &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.25);
+        transform: translateY(-1px);
+        box-shadow: $shadow-md;
       }
     }
 
     .signup-message {
       width: 100%;
-      margin-top: 6px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #e8f5e9;
-      color: #2e7d32;
-      font-size: 14px;
+      margin-top: $space-2;
+      padding: $space-3;
+      border-radius: $radius-sm;
+      background: $success-light;
+      color: $success-color;
+      font-size: $font-size-sm;
       text-align: center;
       word-break: break-word;
 
       &.error {
-        background: #ffebee;
-        color: #c62828;
+        background: $danger-light;
+        color: $danger-color;
       }
     }
     .signup-btns {
@@ -67,11 +70,11 @@
 
 @media (max-width: 600px) {
   .signup-parent {
-    padding: 16px;
+    padding: $space-4;
 
     .signup-form {
-      padding: 28px 20px;
-      border-radius: 14px;
+      padding: $space-8 $space-5;
+      border-radius: $radius-md;
     }
   }
 }

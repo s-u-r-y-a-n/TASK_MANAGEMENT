@@ -3,7 +3,7 @@
 
 .custom-app-modal {
   .modal-paper-container {
-    border-radius: 16px !important;
+    border-radius: $radius-lg !important;
     padding: 0.5rem 0.5rem 0.75rem !important;
     background: linear-gradient(
       180deg,

@@ -5,13 +5,22 @@
   margin: 0 auto;
 
   &__heading {
-    margin-bottom: 2rem;
+    margin-bottom: $space-8;
+  }
+
+  .starred-header {
+    h1 {
+      margin: 0;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      color: $text-primary;
+    }
   }
 
   &__tasks {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: $space-3;
   }
 
   &__state,
@@ -24,12 +33,13 @@
 
   &__empty {
     flex-direction: column;
-    gap: 0.6rem;
-    padding: 2rem;
+    gap: $space-2;
+    padding: $space-8;
     text-align: center;
     color: $text-secondary;
     border: 1px dashed $border-color;
     border-radius: $radius-md;
     background: $bg-subtle;
+    box-shadow: $shadow-sm;
   }
 }

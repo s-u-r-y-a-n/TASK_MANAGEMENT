@@ -68,10 +68,10 @@ export const Dashboard = () => {
   const categoryData = metrics?.distributions?.tasksPerList || [];
 
   const statusColors = statusData.map(
-    (item) => STATUS_COLORS[item._id] || "#6b7280",
+    (item) => STATUS_COLORS[item._id] || "#718096",
   );
   const priorityColors = priorityData.map(
-    (item) => PRIORITY_COLORS[item._id] || "#6b7280",
+    (item) => PRIORITY_COLORS[item._id] || "#718096",
   );
 
   return (

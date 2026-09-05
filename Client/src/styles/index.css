@@ -2,6 +2,28 @@
 
 :root {
   font-family: "Roboto", Arial, sans-serif;
+  color: #172033;
+  background: #f4f7fb;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-soft: #dbeafe;
+  --color-secondary: #0f766e;
+  --color-success: #15803d;
+  --color-warning: #b45309;
+  --color-danger: #dc2626;
+  --color-info: #0369a1;
+  --color-text: #172033;
+  --color-text-secondary: #526079;
+  --color-text-muted: #718096;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f8fafc;
+  --color-border: #d8e0eb;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 3px rgba(23, 32, 51, 0.08);
+  --shadow-md: 0 8px 24px rgba(23, 32, 51, 0.10);
+  --control-height: 42px;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -25,4 +47,98 @@ input,
 textarea,
 select {
   font-family: inherit;
+}
+
+body {
+  background: var(--color-surface-subtle);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+button,
+input,
+textarea,
+select {
+  font-size: 0.875rem;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.28);
+  outline-offset: 2px;
+}
+
+/* Shared MUI and PrimeReact control language. */
+.MuiButton-root,
+.p-button {
+  min-height: var(--control-height);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.MuiButton-containedPrimary,
+.p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-danger) {
+  background: var(--color-primary);
+}
+
+.MuiButton-containedPrimary:hover,
+.p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-danger):hover {
+  background: var(--color-primary-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.MuiOutlinedInput-root,
+.MuiInputBase-root,
+.p-inputtext,
+.p-dropdown,
+.p-multiselect,
+.p-calendar .p-inputtext {
+  min-height: var(--control-height);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.p-inputtext:hover,
+.p-dropdown:hover,
+.p-multiselect:hover {
+  border-color: var(--color-primary);
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.p-inputtext:enabled:focus,
+.p-dropdown:not(.p-disabled).p-focus,
+.p-multiselect:not(.p-disabled).p-focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.MuiFormHelperText-root,
+.p-error {
+  color: var(--color-danger);
+  font-size: 0.75rem;
+}
+
+.MuiChip-root,
+.p-tag {
+  min-height: 28px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .MuiButton-root,
+  .p-button {
+    min-height: 44px;
+  }
 }

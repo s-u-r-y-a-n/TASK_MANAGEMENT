@@ -1,19 +1,21 @@
+@use "../../styles/variables" as *;
+
 .reusable-pie-chart-card {
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  padding: 1.25rem 1.5rem;
+  background: $bg-surface;
+  border-radius: $radius-md;
+  border: 1px solid $border-light;
+  padding: $space-5 $space-6;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: $shadow-sm;
   width: 100%;
   box-sizing: border-box;
 
   .chart-title {
-    margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1f2937;
+    margin: 0 0 $space-2 0;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
   }
 
   .chart-wrapper {
@@ -29,24 +31,24 @@
       justify-content: center;
       height: 100%;
       width: 100%;
-      color: #9ca3af;
-      font-size: 0.88rem;
-      border: 1px dashed #e5e7eb;
-      border-radius: 8px;
+      color: $text-muted;
+      font-size: $font-size-sm;
+      border: 1px dashed $border-color;
+      border-radius: $radius-sm;
     }
   }
 }
 
 .pie-custom-tooltip {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: $bg-surface;
+  border: 1px solid $border-color;
+  padding: $space-1 $space-3;
+  border-radius: $radius-sm;
+  box-shadow: $shadow-md;
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.82rem;
+  font-size: $font-size-xs;
 
   .tooltip-color-indicator {
     width: 8px;
@@ -56,11 +58,11 @@
 
   .tooltip-label {
     font-weight: 500;
-    color: #4b5563;
+    color: $text-secondary;
   }
 
   .tooltip-value {
     font-weight: 700;
-    color: #111827;
+    color: $text-primary;
   }
 }

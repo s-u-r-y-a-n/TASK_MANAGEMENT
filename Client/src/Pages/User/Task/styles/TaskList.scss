@@ -8,7 +8,7 @@
 
   .task-list-item-container {
     .task-list-button {
-      border-radius: 40px !important;
+      border-radius: $radius-pill !important;
       padding: 0.5rem 0.9rem !important;
       color: $text-primary;
       transition:

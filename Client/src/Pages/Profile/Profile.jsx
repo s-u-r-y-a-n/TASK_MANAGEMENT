@@ -125,7 +125,7 @@ export const Profile = () => {
             mt: 1.2,
             minWidth: 190,
             borderRadius: "10px",
-            border: "1px solid #e5e7eb",
+            border: "1px solid #e8edf4",
           },
         }}
       >

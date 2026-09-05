@@ -1,33 +1,65 @@
-// Brand & Accent Colors
+// Brand and semantic colors
 $primary-color: #2563eb;
 $primary-hover: #1d4ed8;
 $primary-light: #dbeafe;
 $primary-contrast: #ffffff;
+$secondary-color: #0f766e;
+$secondary-light: #ccfbf1;
+$accent-color: #f59e0b;
+$success-color: #15803d;
+$success-light: #dcfce7;
+$warning-color: #b45309;
+$warning-light: #fef3c7;
+$danger-color: #dc2626;
+$danger-hover: #b91c1c;
+$danger-light: #fee2e2;
+$info-color: #0369a1;
+$info-light: #e0f2fe;
 
-// Neutral Colors & Text
-$text-primary: #0f172a;
-$text-secondary: #475569;
-$text-disabled: #94a3b8;
+// Neutral colors, surfaces, and borders
+$text-primary: #172033;
+$text-secondary: #526079;
+$text-muted: #718096;
+$text-disabled: #a0aec0;
+$bg-app: #f4f7fb;
+$bg-sidebar: #ffffff;
+$bg-surface: #ffffff;
+$bg-subtle: #f8fafc;
+$bg-hover: #eff6ff;
+$bg-active: #dbeafe;
+$border-color: #d8e0eb;
+$border-light: #e8edf4;
 
-// Backgrounds & Surfaces (Noticeable Cool Tint)
-$bg-app: #e2e8f0; // Distinct cool slate-blue canvas
-$bg-sidebar: #ebf1f8; // Noticeably tinted blue sidebar
-$bg-surface: #ffffff; // Pure white modal/card (sharp contrast against background)
-$bg-subtle: #f0f5fa; // Tinted input background
-$bg-hover: #dbeafe; // Soft blue hover state
-$bg-active: #bfdbfe; // Rich active pill state
+// Typography
+$font-family: "Roboto", "Segoe UI", sans-serif;
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.5rem;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
 
-// Borders & Dividers
-$border-color: #cbd5e1;
-$border-light: #e2e8f0;
-
-// Status
-$danger-color: #ef4444;
-$danger-hover: #dc2626;
-
-// Layout Dimensions & Breakpoints
-$sidebar-width: 290px;
+// Layout, shape, elevation, and motion
+$sidebar-width: 260px;
 $radius-sm: 8px;
 $radius-md: 12px;
-$radius-pill: 24px;
-$transition-default: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+$radius-lg: 16px;
+$radius-pill: 999px;
+$shadow-sm: 0 1px 3px rgba(23, 32, 51, 0.08);
+$shadow-md: 0 8px 24px rgba(23, 32, 51, 0.10);
+$shadow-lg: 0 18px 45px rgba(23, 32, 51, 0.14);
+$transition-default: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+$control-height: 42px;
+$button-height: 42px;
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-5: 1.25rem;
+$space-6: 1.5rem;
+$space-8: 2rem;

@@ -12,6 +12,7 @@ import axiosInstance from "../../utils/axiosConfig.js";
 import "./Starred.scss";
 import useToast from "../../hooks/useToast.js";
 import { useDispatch, useSelector } from "react-redux";
+
 import { setStarredTasks, setTaskStarred } from "../../store/taskSlice.js";
 
 export const Starred = () => {
@@ -110,14 +111,10 @@ export const Starred = () => {
 
   return (
     <Box component="section" className="starred-page">
-      <Box className="starred-page__heading">
-        <Typography component="h1" variant="h4" fontWeight={700}>
-          Starred tasks
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Keep your most important work in one place.
-        </Typography>
-      </Box>
+      <div className="starred-header">
+        <h1> Starred tasks</h1>
+        <p> Keep your most important work in one place.</p>
+      </div>
 
       {isLoading ? (
         <Box className="starred-page__state" aria-label="Loading starred tasks">

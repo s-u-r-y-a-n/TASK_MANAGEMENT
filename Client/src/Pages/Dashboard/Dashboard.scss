@@ -1,89 +1,88 @@
 @use "../../styles/variables" as *;
 
 .dashboard-container {
-  padding: 2rem 2.5rem;
+  padding: $space-8 2.5rem;
   width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: $space-8;
 
   .dashboard-header {
     h1 {
       margin: 0;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #111827;
-      letter-spacing: -0.02em;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      color: $text-primary;
     }
 
     p {
-      margin: 0.35rem 0 0;
-      font-size: 0.9rem;
-      color: #6b7280;
+      margin: $space-1 0 0;
+      font-size: $font-size-sm;
+      color: $text-secondary;
     }
   }
 
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 1.25rem;
+    gap: $space-5;
 
     .metric-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 1.25rem;
-      border: 1px solid #e5e7eb;
+      background: $bg-surface;
+      border-radius: $radius-md;
+      padding: $space-5;
+      border: 1px solid $border-light;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      gap: $space-4;
+      box-shadow: $shadow-sm;
       transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        box-shadow: $shadow-md;
       }
 
       .metric-icon {
         width: 44px;
         height: 44px;
-        border-radius: 10px;
+        border-radius: $radius-sm;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
 
         &.total {
-          background-color: #eef2ff;
-          color: #4f46e5;
+          background-color: $primary-light;
+          color: $primary-color;
         }
 
         &.pending {
-          background-color: #fffbeb;
-          color: #d97706;
+          background-color: $warning-light;
+          color: $warning-color;
         }
 
         &.completed {
-          background-color: #ecfdf5;
-          color: #059669;
+          background-color: $success-light;
+          color: $success-color;
         }
 
         &.overdue {
-          background-color: #fef2f2;
-          color: #dc2626;
+          background-color: $danger-light;
+          color: $danger-color;
         }
 
         &.starred {
-          background-color: #fdf4ff;
-          color: #c026d3;
+          background-color: $secondary-light;
+          color: $secondary-color;
         }
 
         &.lists {
-          background-color: #f0fdfa;
-          color: #0d9488;
+          background-color: $secondary-light;
+          color: $secondary-color;
         }
       }
 
@@ -92,17 +91,17 @@
         flex-direction: column;
 
         .metric-label {
-          font-size: 0.78rem;
-          color: #6b7280;
-          font-weight: 500;
+          font-size: $font-size-xs;
+          color: $text-secondary;
+          font-weight: $font-weight-medium;
           text-transform: uppercase;
           letter-spacing: 0.04em;
         }
 
         .metric-value {
-          font-size: 1.45rem;
-          font-weight: 700;
-          color: #111827;
+          font-size: $font-size-xl;
+          font-weight: $font-weight-bold;
+          color: $text-primary;
           line-height: 1.2;
           margin-top: 0.15rem;
         }
@@ -113,7 +112,7 @@
   .charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
+    gap: $space-6;
     width: 100%;
 
     .chart-item {
@@ -129,14 +128,14 @@
   align-items: center;
   justify-content: center;
   height: 60vh;
-  gap: 1rem;
-  color: #6b7280;
+  gap: $space-4;
+  color: $text-secondary;
 
   .spinner {
     width: 36px;
     height: 36px;
-    border: 3px solid #e5e7eb;
-    border-top-color: #4f46e5;
+    border: 3px solid $border-light;
+    border-top-color: $primary-color;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -150,7 +149,7 @@
 
 @media (max-width: 768px) {
   .dashboard-container {
-    padding: 1.25rem;
+    padding: $space-5;
 
     .metrics-grid {
       grid-template-columns: repeat(2, 1fr);
