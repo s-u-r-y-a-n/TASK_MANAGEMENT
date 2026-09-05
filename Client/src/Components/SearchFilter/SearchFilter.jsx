@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
 import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
@@ -16,6 +17,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilters } from "../../store/taskSlice.js";
 import { setTasks } from "../../store/taskSlice.js";
+import Loader from "../Loader/Loader.jsx";
 import "./styles/SearchFilter.scss";
 
 const initialFilters = {
@@ -27,6 +29,7 @@ const initialFilters = {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const SearchFilter = ({ onApplyFilters }) => {
+  const [isFiltering, setIsFiltering] = useState(false);
   // const [filters, setFilters] = useState(initialFilters);
   const { selectedListIds, taskLists } = useSelector((state) => state.task);
   const selectedListNames = taskLists
@@ -63,6 +66,7 @@ const SearchFilter = ({ onApplyFilters }) => {
   ) => {
     const token = localStorage.getItem("accessToken");
     try {
+      setIsFiltering(true);
       const response = await axios.get(
         `${API_BASE_URL}/search-and-filter-tasks`,
         {
@@ -84,6 +88,8 @@ const SearchFilter = ({ onApplyFilters }) => {
       dispatch(setTasks(response.data.data));
     } catch (error) {
       console.error("Error fetching tasks:", error);
+    } finally {
+      setIsFiltering(false);
     }
   };
 
@@ -214,6 +220,7 @@ const SearchFilter = ({ onApplyFilters }) => {
           </Button>
         </Box>
       </Box>
+      {isFiltering && <Loader message="Loading Tasks" />}
     </Box>
   );
 };

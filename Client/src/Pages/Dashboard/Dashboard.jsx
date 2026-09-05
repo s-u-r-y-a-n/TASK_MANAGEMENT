@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosConfig";
 import { ReusablePieChart } from "../../Components/Piechart/ReusablePieChart.jsx";
 import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
@@ -6,9 +6,9 @@ import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlin
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
-import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import "./Dashboard.scss";
 import { useSelector } from "react-redux";
+import Loader from "../../Components/Loader/Loader.jsx";
 
 // Semantic palettes for status, priority, and lists
 const STATUS_COLORS = {
@@ -54,12 +54,7 @@ export const Dashboard = () => {
   }, [tasks]);
 
   if (loading) {
-    return (
-      <div className="dashboard-loading-state">
-        <div className="spinner" />
-        <p>Loading analytics...</p>
-      </div>
-    );
+    return <Loader message="Loading Analytics" />;
   }
 
   const summary = metrics?.summary || {};

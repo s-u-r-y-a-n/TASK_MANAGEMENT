@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  CircularProgress,
   Typography,
   Menu,
   MenuItem,
@@ -14,6 +13,7 @@ import { EditTask } from "./EditTask.jsx";
 import useToast from "../../../hooks/useToast.js";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent.jsx";
 import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
+import Loader from "../../../Components/Loader/Loader.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -238,7 +238,7 @@ export const FetchTasks = ({ selectedList }) => {
   return (
     <div>
       {isLoading ? (
-        <CircularProgress />
+        <Loader message="Loading Tasks" />
       ) : error ? (
         <Typography variant="body2" color="error">
           {error}

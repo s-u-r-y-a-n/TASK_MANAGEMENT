@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
-  CircularProgress,
   Snackbar,
   Typography,
 } from "@mui/material";
@@ -14,6 +13,7 @@ import useToast from "../../hooks/useToast.js";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setStarredTasks, setTaskStarred } from "../../store/taskSlice.js";
+import Loader from "../../Components/Loader/Loader.jsx";
 
 export const Starred = () => {
   const dispatch = useDispatch();
@@ -117,9 +117,7 @@ export const Starred = () => {
       </div>
 
       {isLoading ? (
-        <Box className="starred-page__state" aria-label="Loading starred tasks">
-          <CircularProgress size={28} />
-        </Box>
+        <Loader message="Loading Starred" />
       ) : error ? (
         <Box className="starred-page__state">
           <Typography color="error">{error}</Typography>

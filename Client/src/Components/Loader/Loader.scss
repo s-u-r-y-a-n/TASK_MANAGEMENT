@@ -1,0 +1,16 @@
+@use "../../styles/variables" as *;
+
+.app-loader {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-3;
+  color: $text-secondary;
+}
+
+.app-loader__message {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
