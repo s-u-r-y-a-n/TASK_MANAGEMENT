@@ -54,7 +54,8 @@ const signup = async function (request, response) {
     if (existingUser) {
       return response.status(409).json({
         success: false,
-        message: "An account with this email already exists. Please log in instead.",
+        message:
+          "An account with this email already exists. Please log in instead.",
       });
     }
 
