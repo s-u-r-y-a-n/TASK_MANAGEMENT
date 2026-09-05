@@ -23,6 +23,7 @@ const OtpInput = ({
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const { showToast } = useToast();
+  console.log(`API_BASE_URL: ${API_BASE_URL}`);
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
@@ -277,7 +278,7 @@ const OtpInput = ({
       </div>
       <div>
         <CountdownTimer
-          initialTime={10}
+          initialTime={300}
           resetKey={resetKey}
           onComplete={() => {
             return setDisable(false);
