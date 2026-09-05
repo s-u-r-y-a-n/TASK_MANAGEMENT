@@ -135,3 +135,11 @@
     }
   }
 }
+
+@media (max-width: 425px) {
+  .dashboard-container {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
