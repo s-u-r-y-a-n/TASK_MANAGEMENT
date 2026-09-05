@@ -142,10 +142,18 @@ const searchAndFilterTasks = async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit) || 50, 100);
     const skip = Math.max(parseInt(req.query.skip) || 0, 0);
 
-    const tasks = await TaskModel.find(filter)
+    const populatedTasks = await TaskModel.find(filter)
+      .populate("listId", "listName")
       .sort({ dueDate: 1, priority: 1 })
       .limit(limit)
-      .skip(skip);
+      .skip(skip)
+      .lean();
+
+    const tasks = populatedTasks.map((task) => ({
+      ...task,
+      listName: task.listId?.listName || "",
+      listId: task.listId?._id || task.listId,
+    }));
 
     const totalCount = await TaskModel.countDocuments(filter);
 

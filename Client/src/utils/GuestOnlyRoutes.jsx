@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { isAccessTokenValid } from "./authToken.js";
 import axiosInstance from "./axiosConfig.js";
 
-export const ProtectedRoutes = () => {
-  const location = useLocation();
+export const GuestOnlyRoutes = () => {
   const accessToken = localStorage.getItem("accessToken");
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isGuest, setIsGuest] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    const validateAccessToken = async () => {
+    const checkAuthentication = async () => {
       if (!isAccessTokenValid(accessToken)) {
-        setIsAuthenticated(false);
+        setIsGuest(true);
         return;
       }
 
@@ -21,28 +20,25 @@ export const ProtectedRoutes = () => {
         await axiosInstance.get("/validate-token", {
           signal: controller.signal,
         });
-        setIsAuthenticated(true);
+        setIsGuest(false);
       } catch (error) {
         if (error.code !== "ERR_CANCELED") {
-          setIsAuthenticated(false);
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          setIsGuest(true);
         }
       }
     };
 
-    validateAccessToken();
+    checkAuthentication();
 
     return () => controller.abort();
   }, [accessToken]);
 
-  if (isAuthenticated === null) {
-    return null;
-  }
+  if (isGuest === null) return null;
 
-  if (!isAuthenticated) {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-
-    return <Navigate to="/login" replace state={{ from: location }} />;
+  if (!isGuest) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;

@@ -13,8 +13,7 @@ import { Link } from "react-router-dom";
 import useToast from "../../hooks/useToast";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { API_BASE_URL } from "../../utils/apiConfig.js";
 
 const Login = () => {
   const [loginForm, setLoginForm] = useState({
@@ -97,7 +96,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/login`, loginForm);
-      
+
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
       setLoginForm({
@@ -109,7 +108,7 @@ const Login = () => {
         "Logged In",
         response.data.message || "You have been logged in successfully.",
       );
-      navigate("/home");
+      navigate("/home", { replace: true });
     } catch (error) {
       console.error(error);
       showToast(

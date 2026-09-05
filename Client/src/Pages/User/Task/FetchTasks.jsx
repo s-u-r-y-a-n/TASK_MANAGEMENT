@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Box, Typography, Menu, MenuItem } from "@mui/material";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosConfig.js";
 import TaskCard from "../../../Components/TaskCard.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setTaskStarred, setTasks } from "../../../store/taskSlice.js";
@@ -14,8 +10,6 @@ import useToast from "../../../hooks/useToast.js";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent.jsx";
 import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import Loader from "../../../Components/Loader/Loader.jsx";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export const FetchTasks = ({ selectedList }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,33 +28,25 @@ export const FetchTasks = ({ selectedList }) => {
   const { tasks } = useSelector((state) => state.task);
   const { showToast } = useToast();
 
-  const accessToken = localStorage.getItem("accessToken");
-
   useEffect(() => {
     const controller = new AbortController();
     const fetchTasks = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await axios.get(
-          `${API_BASE_URL}/search-and-filter-tasks`,
-          {
-            params: {
-              listId: selectedListIds,
-              search,
-              priority,
-              status,
-              dueDate,
-              // limit: 20,
-              // skip: 0,
-            },
-            paramsSerializer: { indexes: null },
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-            signal: controller.signal,
+        const response = await axiosInstance.get("/search-and-filter-tasks", {
+          params: {
+            listId: selectedListIds,
+            search,
+            priority,
+            status,
+            dueDate,
+            // limit: 20,
+            // skip: 0,
           },
-        );
+          paramsSerializer: { indexes: null },
+          signal: controller.signal,
+        });
         dispatch(setTasks(response.data.data));
       } catch (error) {
         if (axios.isCancel(error)) return;
@@ -77,7 +63,6 @@ export const FetchTasks = ({ selectedList }) => {
 
     return () => controller.abort();
   }, [
-    accessToken,
     selectedList?._id,
     selectedListIds,
     dispatch,
@@ -109,12 +94,9 @@ export const FetchTasks = ({ selectedList }) => {
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
     try {
-      await axios.delete(`${API_BASE_URL}/delete-task/${selectedTask._id}`, {
+      await axiosInstance.delete(`/delete-task/${selectedTask._id}`, {
         data: {
           listId: selectedTask.listId,
-        },
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -156,14 +138,11 @@ export const FetchTasks = ({ selectedList }) => {
         formData.append("taskDueDate", task.dueDate);
       }
 
-      const response = await axios.patch(
-        `${API_BASE_URL}/edit-task/${task._id}`,
+      const response = await axiosInstance.patch(
+        `/edit-task/${task._id}`,
         formData,
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         },
       );
 
@@ -200,14 +179,9 @@ export const FetchTasks = ({ selectedList }) => {
     );
 
     try {
-      const response = await axios.put(
-        `${API_BASE_URL}/toggle-starred/${task._id}`,
+      const response = await axiosInstance.put(
+        `/toggle-starred/${task._id}`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
       );
 
       dispatch(

@@ -21,13 +21,11 @@ import StarIcon from "@mui/icons-material/Star";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { styled } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axiosInstance from "../../../utils/axiosConfig.js";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent";
 import { addStarredTask, setTasks } from "../../../store/taskSlice.js";
 import useToast from "../../../hooks/useToast";
 import { FILE_UPLOAD_RULES } from "../../../Config/fileValidation.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -66,8 +64,6 @@ export const CreateTask = () => {
     listId: "",
     title: "",
   });
-
-  const accessToken = localStorage.getItem("accessToken");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -173,16 +169,9 @@ export const CreateTask = () => {
       if (taskFile) {
         formData.append("taskFile", taskFile);
       }
-      const response = await axios.post(
-        `${API_BASE_URL}/create-task`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
+      const response = await axiosInstance.post("/create-task", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       const createdTask = response.data.data;
       const taskForTaskList = {
         ...createdTask,
@@ -324,6 +313,11 @@ export const CreateTask = () => {
             <TextField
               name="dueDate"
               label="Due Date"
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               type="date"
               value={taskDetails.dueDate}
               onChange={handleChange}

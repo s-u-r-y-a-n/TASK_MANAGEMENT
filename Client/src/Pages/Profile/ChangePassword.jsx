@@ -5,7 +5,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { DialogComponent } from "../../Components/Modal/DialogComponent";
 import PasswordValidation from "../../Components/PasswordValidation/PasswordValidation";
 import useToast from "../../hooks/useToast";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosConfig.js";
 import "./ChangePassword.scss";
 
 export const ChangePassword = ({ open, onClose }) => {
@@ -31,8 +31,6 @@ export const ChangePassword = ({ open, onClose }) => {
     confirmPassword: "",
   });
 
-  const accessToken = localStorage.getItem("accessToken");
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const passwordRegex =
     /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).*$/;
 
@@ -111,18 +109,10 @@ export const ChangePassword = ({ open, onClose }) => {
     setGeneralError("");
 
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/change-password`,
-        {
-          oldPassword: payload.oldPassword,
-          newPassword: payload.newPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await axiosInstance.post("/change-password", {
+        oldPassword: payload.oldPassword,
+        newPassword: payload.newPassword,
+      });
 
       handleClose();
       showToast(

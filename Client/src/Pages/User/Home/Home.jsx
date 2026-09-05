@@ -3,7 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axiosInstance from "../../../utils/axiosConfig.js";
 
 import Sidebar from "../Sidebar/Sidebar";
 import useToast from "../../../hooks/useToast";
@@ -13,8 +13,6 @@ import { Task } from "../Task/Task";
 import { Profile } from "../../Profile/Profile";
 import Starred from "../../Starred/Starred";
 import { Dashboard as DashboardComponent } from "../../Dashboard/Dashboard.jsx";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const SIDEBAR_WIDTH = 4;
 
@@ -32,16 +30,10 @@ const Home = () => {
   const isStarredPage = location.pathname === "/starred";
   const isDashboardPage = location.pathname === "/dashboard";
 
-  const accessToken = localStorage.getItem("accessToken");
-
   useEffect(() => {
     const fetchTaskLists = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/get-tasklists`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axiosInstance.get("/get-tasklists");
         dispatch(setTasksLists(response.data.data));
       } catch (error) {
         console.error("Error fetching task lists:", error);
@@ -49,24 +41,16 @@ const Home = () => {
     };
 
     fetchTaskLists();
-  }, [accessToken, dispatch]);
+  }, [dispatch]);
 
   const createTaskList = async () => {
     const trimmedListName = listName.trim();
     if (!trimmedListName) return false;
     setIsCreatingList(true);
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/create-list`,
-        {
-          listName: trimmedListName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await axiosInstance.post("/create-list", {
+        listName: trimmedListName,
+      });
       dispatch(setTasksLists([...taskLists, response.data.data]));
       showToast("success", "Created", response.data.message);
       setListName("");
@@ -90,17 +74,9 @@ const Home = () => {
     if (!trimmedListName) return false;
     setIsCreatingList(true);
     try {
-      const response = await axios.put(
-        `${API_BASE_URL}/update-list/${listId}`,
-        {
-          listName: trimmedListName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await axiosInstance.put(`/update-list/${listId}`, {
+        listName: trimmedListName,
+      });
       const updatedTaskLists = taskLists.map((list) =>
         list._id === listId
           ? {
@@ -129,14 +105,7 @@ const Home = () => {
   const deleteTaskList = async (listId) => {
     setIsCreatingList(true);
     try {
-      const response = await axios.delete(
-        `${API_BASE_URL}/delete-list/${listId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await axiosInstance.delete(`/delete-list/${listId}`);
       const updatedTaskLists = taskLists.filter((list) => list._id !== listId);
       dispatch(setTasksLists(updatedTaskLists));
       if (selectedList?._id === listId) {
@@ -268,7 +237,6 @@ const Home = () => {
           ) : (
             <Task selectedList={selectedList} />
           )}
-
         </Box>
       </Box>
     </>

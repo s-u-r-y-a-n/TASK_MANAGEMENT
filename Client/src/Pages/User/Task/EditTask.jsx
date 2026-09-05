@@ -18,13 +18,11 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axiosInstance from "../../../utils/axiosConfig.js";
 import { DialogComponent } from "../../../Components/Modal/DialogComponent";
 import useToast from "../../../hooks/useToast";
 import { setTaskStarred, setTasks } from "../../../store/taskSlice.js";
 import { FILE_UPLOAD_RULES } from "../../../Config/fileValidation.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -46,8 +44,6 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
   const { showToast } = useToast();
   const dispatch = useDispatch();
   const { tasks } = useSelector((state) => state.task);
-  const accessToken = localStorage.getItem("accessToken");
-
   const [taskDetails, setTaskDetails] = useState({
     listId: "",
     title: "",
@@ -175,14 +171,11 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
         formData.append("taskFile", taskFile);
       }
 
-      const response = await axios.put(
-        `${API_BASE_URL}/edit-task/${task._id}`,
+      const response = await axiosInstance.put(
+        `/edit-task/${task._id}`,
         formData,
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         },
       );
 
@@ -359,6 +352,11 @@ export const EditTask = ({ task, open, onClose, onTaskUpdated }) => {
         <TextField
           name="dueDate"
           label="Due Date"
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+            },
+          }}
           type="date"
           value={taskDetails.dueDate}
           onChange={handleChange}

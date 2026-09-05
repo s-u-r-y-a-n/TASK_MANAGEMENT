@@ -4,7 +4,7 @@ import { showToast as showToastAction } from "../store/toastSlice";
 const useToast = () => {
   const dispatch = useDispatch();
 
-  const showToast = (severity, summary, detail, life = 6000) => {
+  const showToast = (severity, summary, detail, life = 3000) => {
     dispatch(
       showToastAction({
         id: crypto.randomUUID(),

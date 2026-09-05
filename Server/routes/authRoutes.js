@@ -10,11 +10,13 @@ import resendVerificationOtp from "../controllers/Auth Controllers/resendVerific
 import { authenticateToken } from "../middlewares/authenticateToken.js";
 import userDetails from "../controllers/Auth Controllers/userDetails.js";
 import changePassword from "../controllers/Auth Controllers/changePassword.js";
+import logout from "../controllers/Auth Controllers/logout.js";
 
 const router = Router();
 
 router.post("/signup", signup);
 router.post("/login", login);
+router.post("/logout", authenticateToken, logout);
 router.post("/verify-email", verifyEmail);
 router.post("/reset-otp", resetOtp);
 router.post("/refreshtoken", refreshToken);

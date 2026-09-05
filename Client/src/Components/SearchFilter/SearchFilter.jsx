@@ -10,14 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilters } from "../../store/taskSlice.js";
-import { setTasks } from "../../store/taskSlice.js";
-import Loader from "../Loader/Loader.jsx";
 import "./styles/SearchFilter.scss";
 
 const initialFilters = {
@@ -27,85 +24,39 @@ const initialFilters = {
   dueDate: "",
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const SearchFilter = ({ onApplyFilters }) => {
-  const [isFiltering, setIsFiltering] = useState(false);
-  // const [filters, setFilters] = useState(initialFilters);
+  const dispatch = useDispatch();
   const { selectedListIds, taskLists } = useSelector((state) => state.task);
   const selectedListNames = taskLists
     .filter((list) => selectedListIds.includes(list._id || list.id))
     .map((list) => list.listName || list.name || list.title || "Unnamed List");
   const { filters } = useSelector((state) => state.task);
-  const { search, priority, status, dueDate } = useSelector(
-    (state) => state.task.filters,
-  );
+  const [draftFilters, setDraftFilters] = useState(() => ({ ...filters }));
+  const { search, priority, status, dueDate } = draftFilters;
 
-  console.log("SELECTED LIST IDS FROM SEARCH FILTER:", selectedListIds);
-
-  const dispatch = useDispatch();
-  const buildFilterPayload = () => ({
+  const buildFilterPayload = (filterValues) => ({
     listId: selectedListIds,
-    search: filters.search.trim(),
-    priority: filters.priority,
-    status: filters.status,
-    dueDate: filters.dueDate,
+    search: filterValues.search.trim(),
+    priority: filterValues.priority,
+    status: filterValues.status,
+    dueDate: filterValues.dueDate,
   });
 
   const handleFilterChange = (field, value) => {
-    dispatch(
-      setFilters({
-        ...filters,
-        [field]: value,
-      }),
-    );
-  };
-
-  const fetchTasks = async (
-    customFilters = filters,
-    listId = selectedListIds,
-  ) => {
-    const token = localStorage.getItem("accessToken");
-    try {
-      setIsFiltering(true);
-      const response = await axios.get(
-        `${API_BASE_URL}/search-and-filter-tasks`,
-        {
-          params: {
-            listId,
-            search: customFilters.search.trim(),
-            priority: customFilters.priority,
-            status: customFilters.status,
-            dueDate: customFilters.dueDate,
-          },
-          // Serialize selected list IDs as repeated query parameters so the
-          // Express controller receives an array.
-          paramsSerializer: { indexes: null },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      dispatch(setTasks(response.data.data));
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    } finally {
-      setIsFiltering(false);
-    }
+    setDraftFilters((currentFilters) => ({
+      ...currentFilters,
+      [field]: value,
+    }));
   };
 
   const applyFilters = (event) => {
     event?.preventDefault();
-    fetchTasks(filters, selectedListIds);
-    onApplyFilters?.(buildFilterPayload());
+    dispatch(setFilters(draftFilters));
+    onApplyFilters?.(buildFilterPayload(draftFilters));
   };
 
   const clearFilters = () => {
-    dispatch(setFilters(initialFilters));
-    fetchTasks(initialFilters, selectedListIds);
-    onApplyFilters?.({
-      listId: selectedListIds,
-      ...initialFilters,
-    });
+    setDraftFilters(initialFilters);
   };
 
   return (
@@ -220,7 +171,6 @@ const SearchFilter = ({ onApplyFilters }) => {
           </Button>
         </Box>
       </Box>
-      {isFiltering && <Loader message="Loading Tasks" />}
     </Box>
   );
 };

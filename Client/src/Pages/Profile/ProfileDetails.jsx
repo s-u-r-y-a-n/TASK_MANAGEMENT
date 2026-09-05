@@ -6,7 +6,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import LockResetIcon from "@mui/icons-material/LockReset";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosConfig.js";
 import useToast from "../../hooks/useToast.js";
 import "./ProfileDetails.scss";
 import { ChangePassword } from "./ChangePassword.jsx";
@@ -74,7 +74,7 @@ export const ProfileDetails = () => {
 
     setSubmitting(true);
     try {
-      const response = await axios.post("/change-password", {
+      const response = await axiosInstance.post("/change-password", {
         oldPassword: passwordData.oldPassword,
         newPassword: passwordData.newPassword,
       });

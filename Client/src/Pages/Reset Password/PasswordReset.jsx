@@ -8,8 +8,7 @@ import useToast from "../../hooks/useToast";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setEmail, setIsEmailSent } from "../../store/appSlice";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { API_BASE_URL } from "../../utils/apiConfig.js";
 
 const PasswordReset = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

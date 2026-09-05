@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import axios from "axios";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { API_BASE_URL } from "../utils/apiConfig.js";
 
 // Decode JWT token to get expiry time
 const decodeToken = (token) => {
@@ -13,7 +12,7 @@ const decodeToken = (token) => {
       atob(base64)
         .split("")
         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
+        .join(""),
     );
     return JSON.parse(jsonPayload);
   } catch (error) {
@@ -26,11 +25,11 @@ const decodeToken = (token) => {
 const getTimeUntilExpiry = (token) => {
   const decoded = decodeToken(token);
   if (!decoded || !decoded.exp) return null;
-  
+
   const expiryTime = decoded.exp * 1000; // Convert to milliseconds
   const currentTime = Date.now();
   const timeUntilExpiry = expiryTime - currentTime;
-  
+
   return timeUntilExpiry > 0 ? timeUntilExpiry : null;
 };
 
@@ -55,7 +54,7 @@ const performTokenRefresh = async (refreshToken) => {
             accessToken: response.data.accessToken,
             refreshToken: response.data.refreshToken,
           },
-        })
+        }),
       );
 
       return {
@@ -69,7 +68,7 @@ const performTokenRefresh = async (refreshToken) => {
     // Clear tokens and redirect to login
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    window.location.href = "/login";
+    window.location.replace("/login");
     return { success: false };
   }
 };
@@ -100,7 +99,10 @@ export const useTokenRefresh = () => {
 
     // Refresh at 50% of token lifetime (for 1-minute token, refresh at 30 seconds)
     // Or 10 seconds before expiry, whichever is earlier
-    const refreshTime = Math.min(timeUntilExpiry * 0.5, timeUntilExpiry - 10000);
+    const refreshTime = Math.min(
+      timeUntilExpiry * 0.5,
+      timeUntilExpiry - 10000,
+    );
 
     if (refreshTime <= 0) {
       // Token expires soon, refresh immediately
@@ -115,7 +117,7 @@ export const useTokenRefresh = () => {
     }
 
     console.log(
-      `Token refresh scheduled in ${Math.round(refreshTime / 1000)} seconds`
+      `Token refresh scheduled in ${Math.round(refreshTime / 1000)} seconds`,
     );
 
     // Schedule refresh

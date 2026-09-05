@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useId } from "react";
-import axios from "axios";
+import { useEffect, useState, useId } from "react";
+import axiosInstance from "../../utils/axiosConfig.js";
 import { useNavigate } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -24,8 +24,6 @@ export const Profile = () => {
   const menuId = `${id}-profile-menu`;
   const open = Boolean(anchorEl);
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   useEffect(() => {
     const fetchUserDetails = async () => {
       const accessToken = localStorage.getItem("accessToken");
@@ -34,11 +32,7 @@ export const Profile = () => {
         return;
       }
       try {
-        const response = await axios.get(`${API_BASE_URL}/user-details`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axiosInstance.get("/user-details");
         setUserDetails(response.data.data);
         console.log("Fetched user details:", response.data.data);
         dispatch(setUserData(response.data.data));
@@ -53,7 +47,7 @@ export const Profile = () => {
     };
 
     fetchUserDetails();
-  }, [API_BASE_URL]);
+  }, [dispatch]);
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -73,14 +67,14 @@ export const Profile = () => {
     try {
       const refreshToken = localStorage.getItem("refreshToken");
       if (refreshToken) {
-        await axios.post(`${API_BASE_URL}/logout`, { refreshToken });
+        await axiosInstance.post("/logout", { refreshToken });
       }
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   };
 

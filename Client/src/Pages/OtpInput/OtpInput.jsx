@@ -7,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setIsOtpSubmitted, setOtp } from "../../store/appSlice";
 import useToast from "../../hooks/useToast";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { API_BASE_URL } from "../../utils/apiConfig.js";
 
 const OtpInput = ({
   length = 6,
